@@ -1,0 +1,244 @@
+<?php
+/*
+Plugin Name: d3 simpleCharts
+Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
+Description: d3 simpleCharts gives you easy and direct access to all powerfull D3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
+Version: 1.0.0
+Author: Jouni Santara
+Organisation: TERE-tech ltd
+Author URI: http://www.linkedin.com/in/santara
+License: GPL2
+*/
+
+/*
+  d3 - Basic Charts
+	-----------------
+	This WP-plugin is meant to be a clear foundation to bridge W3C's consortium long hard work (on the areas of CSS, SVG, and DOM) and active D3 framework community's efforts to the universe of WordPress developers.
+
+	Our goal & approach is to offer a simple server's and client's open source codes that are highly modular so that you can easily tailor it just to your specific needs for high-quality charts.
+
+	Here are 4 example charts of D3 society but the same approach can be used for any of those d3's impressive other gallery charts: just add more JavaScript functions for each new chart you want to generate on javascript file.
+
+	Fast Growing D3 Gallery is here:
+	* https://github.com/mbostock/d3/wiki/Gallery
+	
+	Our example should inspire you to add more charts into your visualisation purposes easily and fast and finally build up some nice UI on the posting panel of WordPress to manage it all fast and easily that benefits all of us.
+
+	Welcome to the journey of professional SVG charts !	
+
+
+
+ 	simpleBars
+	----------
+	- Generating new simple chart from values + their labels
+*/
+function simpleBarsDev($data) {
+	
+// Unique ID name for each new chart +
+// Generate all CSS to WP page + receive a unique ID of graph
+$uniq = styleBars($data['css']);
+$chartid = "chart" . $uniq;
+
+// Testing ALL user's given arguments from php side + setting defauls
+
+// Data values & labels from arrays
+$values = testDef('',$data['values']);
+$labels = testDef('',$data['labels']);
+// Convert to php arrays
+$values = getArr($values);
+$labels = getArr($labels);
+// Convert into pairs of JSON for JS input
+$points2 = array();
+
+if ($values[0] != '')
+foreach(array_keys($labels) as $i) {
+	$points .= '{ "label" : "' . $labels[$i] . '", "value" : "' . $values[$i] . '" },';
+	array_push( $points2, json_decode('{ "label" : "' . $labels[$i] . '", "value" : "' . $values[$i] . '" }') );
+}
+$points = '[' . $points . ' ]'; // array JSON
+// echo json_encode($points2);
+// var_dump(json_decode($points));
+
+// All other - optional - arguments from php shortcode call to php args array
+$args2js = array();
+$args2js["uniq"] = $uniq; // Unique ID of this new chart
+$args2js["data"] = $points2; // Data set: labels & values in JSON array
+
+// All these X labels inside $data['X'] are open and available from php shortnote for user
+
+$args2js["chart"] = testDef("Columns",$data['chart']); // Asked basic chart type + its default: simpleColumns
+$args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
+$args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
+$args2js["datafile"] = testDef("",$data['datafile']); // Source of external file for data set
+$args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis
+$args2js["width"] = testDef(640,$data['width']); // Width of final chart on post or page (default: VGA)
+$args2js["height"] = testDef(480,$data['height']); // Height of final chart
+$args2js["margin"] = testDef(json_decode('{"top": 20, "right": 20, "bottom": 30, "left": 70}'),json_decode($data['margin'])); // How much space around chart for the axis titles & values
+$args2js["ticks"] = testDef(10,$data['ticks']); // If there is horizontal or vertical ticks inside columns or bars
+$args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linear axis of values
+$args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
+$args2js["piecolor"] = testDef('orange',$data['piecolor']); // Starting color of pie chart slices
+$args2js["piecolstep"] = testDef(0.2,$data['piecolstep']); // Gradual color change amount for next slices to brighter
+
+$main = testDef("",$data['mtitle']); // Major title
+$mstyle = testDef("text-align:right",$data['mstyle']); // Title's position & style <TD>
+$backstyle = testDef('background-color:#E6E6FA; border:4px ridge navy;',$data['backstyle']); // Border & background style
+$url = testDef('',$data['url']); // Url to further info on net
+
+if ($url)  // URL to external page linked to chart
+	$url = ' href="' . $url . '" ';
+
+$title = testDef('',$data['title']); // Longer pop-up description for user when cursor mover over chart
+if ($title)
+	$title = ' title="' . $title . '" ';
+/*
+TODO/test: User defines one's own container id => chart could be anywhere on page/post where shortcode is called, clumsy
+if ($data['id'])
+	$args2js['id'] = $data['id'];
+*/
+
+// Including minimized version of d3.js from its CDN and our core JavaScript lib of simple charts
+?>
+<script src="http://d3js.org/d3.v3.min.js"></script> 
+<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script> 
+
+<script>
+// First things at first: generate the HTML -container for its new chart
+var url = '<? echo $url ?>';
+var chartid = '<? echo $chartid ?>';
+var title = '<? echo $title ?>';
+var url = '<? echo $url ?>';
+id = '<? echo $args2js['id'] ?>';
+
+var html = '<table style="<?php echo $backstyle ?>">';
+var html = html + '<tr><td style="<?php echo $mstyle ?>"><b><?php echo $main ?></b></td></tr>';
+if (url)
+	var html = html + '<td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td>';
+else
+	var html = html + '<td id="'+ chartid + '" ' + title + '></td>'; 
+var html = html + '</tr></table>';
+
+document.write(html); // This html container appears at top of each WP page/post
+
+// Moving to client's side JS processing ...
+
+// A magical glue: dumping server's php JSON for browser's JS variable, one line
+var args2js = <?php echo json_encode($args2js) ?>;
+// Writing data set into global array (debug and look this on FireBug/Chrome console: "d3charts")
+if (typeof d3charts == 'undefined') 
+	d3charts = new Array();
+
+// d3charts[args2js.title] = args2js;
+d3charts.push(args2js);
+
+// Printing all data for input next
+var datas = <?php echo $points ?>;
+
+// drawChart(datas,args2js);
+
+// if (1 == 0) {
+
+if (datas.length == 0) {
+
+	// External file
+	var datafile = "<?php echo $args2js["datafile"] ?>";
+	if (!datafile) { // Input must exists
+		console.error('Not found data input for chart from file or php direct call !');
+	}
+	// This is how d3.js wants to read external files: AJAX calls + GETs, not pretty but works
+	if (datafile.indexOf('.tsv') > 0)
+	d3.tsv(datafile, function(error, data) {
+		drawChart(data,args2js);
+	});
+	if (datafile.indexOf('.csv') > 0)
+	d3.csv(datafile, function(error, data) { 
+		drawChart(data,args2js);
+	});
+	if (datafile.indexOf('.json') > 0)
+	d3.json(datafile, function(error, data) {
+		drawChart(data,args2js);
+	});
+	if (datafile.indexOf('.xml') > 0)
+	d3.xml(datafile, function(error, data) {
+		// console.info(data);
+		// d3doc = data;
+		return;  // NOT working yet: TODO NEXT ...
+		drawChart(data,args2js.title);
+	});
+}
+else // data is coming via php args directly: values + labels in datas
+	drawChart(datas,args2js);
+// d3charts[args2js.title].data = dataset;
+// }
+</script>
+<?php
+};
+
+// add_shortcode("drawColumns", "simpleBarsPro");
+add_shortcode("drawColumns", "simpleBarsDev");
+add_shortcode("simpleCharts", "simpleBarsDev");
+
+// All minor PHP functions & what they do
+
+// Helps for setting of default arguments
+function testDef($setupV, $userV) {
+	if ($userV)
+		return $userV;
+	return $setupV;
+}
+
+/*
+ 	styleBars
+	---------
+	Generating CSS elements automatically from user's provided JSON data
+ 	+ printing this into its own style section on WP pages before actual new chart.
+	
+	Returnin unique id number for each new chart & its data set.
+
+	Abit tricky function - sorry.
+*/
+function styleBars($cssdata) {
+
+$uniq = rand();
+
+// Parsing css data from json object => string
+$cssdata = (array) json_decode($cssdata);
+// var_dump($cssdata);
+// echo '<br />';
+
+$css = '';
+if ($cssdata)
+/*
+	an input json from php's input array:
+		{ ".bar" : { "fill" : "navy" } }
+	& the target output: 
+		.bar { "fill": "navy"; }
+*/
+foreach (array_keys($cssdata) as $gobject) {
+	//	typical objects of chart: '.bar', '.axis path', etc
+	$css .= '.g' . $uniq . ' ' . $gobject . ' { ';
+	$tmp = (array) $cssdata[$gobject];
+	// var_dump($tmp);
+	foreach (array_keys($tmp) as $attr)
+		// typical attributes: 'fill', 'display', etc
+		$css .= $attr . ': ' . $tmp[$attr] . '; ';
+	$css .= ' } ';
+}
+ echo '<style>' . $css . '</style>';
+return $uniq;
+}
+/*
+	getArr
+	------
+	Parsing user's str arrays (eq data's values & labels) -> real php array object
+		an input format: "(a,b,c)"
+		the output: array("a","b","c")
+*/
+function getArr($array) {
+
+	$array = str_replace('(','',$array);
+	$array = str_replace(')','',$array);
+	return explode(',',$array);  // cells must be separated by ',' letter
+}
+
+?>
