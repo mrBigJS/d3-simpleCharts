@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull D3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.0.0
+Version: 1.1.0
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -11,7 +11,7 @@ License: GPL2
 */
 
 /*
-  d3 - Basic Charts
+	d3 - Basic Charts
 	-----------------
 	This WP-plugin is meant to be a clear foundation to bridge W3C's consortium long hard work (on the areas of CSS, SVG, and DOM) and active D3 framework community's efforts to the universe of WordPress developers.
 
@@ -47,15 +47,15 @@ $labels = testDef('',$data['labels']);
 // Convert to php arrays
 $values = getArr($values);
 $labels = getArr($labels);
-// Convert into pairs of JSON for JS input
-$points2 = array();
 
+// Convert input into pairs of JSON to use for later JS input
+$points2 = array();
 if ($values[0] != '')
 foreach(array_keys($labels) as $i) {
-	$points .= '{ "label" : "' . $labels[$i] . '", "value" : "' . $values[$i] . '" },';
+	// $points .= '{ "label" : "' . $labels[$i] . '", "value" : "' . $values[$i] . '" },';
 	array_push( $points2, json_decode('{ "label" : "' . $labels[$i] . '", "value" : "' . $values[$i] . '" }') );
 }
-$points = '[' . $points . ' ]'; // array JSON
+// $points = '[' . $points . ' ]'; // array JSON
 // echo json_encode($points2);
 // var_dump(json_decode($points));
 
@@ -69,7 +69,11 @@ $args2js["data"] = $points2; // Data set: labels & values in JSON array
 $args2js["chart"] = testDef("Columns",$data['chart']); // Asked basic chart type + its default: simpleColumns
 $args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
 $args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
+
 $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file for data set
+$args2js['row'] = testDef('',$data['row']); // Row of chosen data from multidimension input file
+$args2js['column'] = testDef('',$data['column']); // Column of chosen data from multidimension input file
+
 $args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis
 $args2js["width"] = testDef(640,$data['width']); // Width of final chart on post or page (default: VGA)
 $args2js["height"] = testDef(480,$data['height']); // Height of final chart
@@ -77,12 +81,16 @@ $args2js["margin"] = testDef(json_decode('{"top": 20, "right": 20, "bottom": 30,
 $args2js["ticks"] = testDef(10,$data['ticks']); // If there is horizontal or vertical ticks inside columns or bars
 $args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linear axis of values
 $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
-$args2js["piecolor"] = testDef('orange',$data['piecolor']); // Starting color of pie chart slices
-$args2js["piecolstep"] = testDef(0.2,$data['piecolstep']); // Gradual color change amount for next slices to brighter
+// Coloring of chart objects, linear ramp, if any defined
+$args2js['startbar'] = testDef('',$data['startbar']); // Starting color of pie chart slices
+$args2js['endbar'] = testDef('',$data['endbar']); // Starting color of pie chart slices
 
 $main = testDef("",$data['mtitle']); // Major title
 $mstyle = testDef("text-align:right",$data['mstyle']); // Title's position & style <TD>
-$backstyle = testDef('background-color:#E6E6FA; border:4px ridge navy;',$data['backstyle']); // Border & background style
+
+$moredata = testDef(" More Data ",$data['moredata']); // Title's position & style <TD>
+
+$backstyle = testDef('background-color:#E6E6FA; border:4px ridge navy;',$data['backstyle']); // Chart's border & background style
 $url = testDef('',$data['url']); // Url to further info on net
 
 if ($url)  // URL to external page linked to chart
@@ -110,35 +118,60 @@ var title = '<? echo $title ?>';
 var url = '<? echo $url ?>';
 id = '<? echo $args2js['id'] ?>';
 
-var html = '<table style="<?php echo $backstyle ?>">';
-var html = html + '<tr><td style="<?php echo $mstyle ?>"><b><?php echo $main ?></b></td></tr>';
-if (url)
-	var html = html + '<td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td>';
-else
-	var html = html + '<td id="'+ chartid + '" ' + title + '></td>'; 
-var html = html + '</tr></table>';
-
-document.write(html); // This html container appears at top of each WP page/post
-
-// Moving to client's side JS processing ...
+// Moving to client's side JS processing now ...
 
 // A magical glue: dumping server's php JSON for browser's JS variable, one line
 var args2js = <?php echo json_encode($args2js) ?>;
+
 // Writing data set into global array (debug and look this on FireBug/Chrome console: "d3charts")
 if (typeof d3charts == 'undefined') 
 	d3charts = new Array();
-
 // d3charts[args2js.title] = args2js;
 d3charts.push(args2js);
 
+// All existing chart types & their names
+var ctype = ["'Columns'","'Bars'","'Area'","'Pie'"];
+// Referring to just now added one for creating its buttons
+var last_chart = d3charts.length-1;
+var fontx = ' style="font-size:xx-small; float:right" ';
+var butts = '<span style="background-color:darkgray"><button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> '+ctype[0]+' </button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> '+ctype[1]+' </button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> '+ctype[2]+' </button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> '+ctype[3]+' </button></span>';
+
+var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
+
+var html = '<table style="<?php echo $backstyle ?>">';  // Our container is <table> element with custom styles
+html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b></td></tr>'; // Main title + its style
+html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
+if (url) // Here is where D3 draws its chart, finally
+	html = html + '<tr><td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
+else
+	html = html + '<tr><td id="'+ chartid + '" ' + title + '></td></tr>';
+ 
+var id = "'"+chartid+"'";
+var odform = "'table'";
+html = html + '<tr><td id="'+ id + '" title="Data values"></td></tr>'; // Container of big data
+
+var cc = '<tr><td style="font-size:x-small; float:left">Run by <b>W3C</b> technology</td></tr>';
+
+var odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for easy Copy & Paste here."> BIG DATA </button>';
+
+var odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for easy Copy & Paste here."> Excel data </button>';
+
+html = html + '<tr><td id="'+ chartid + 'odata" ' + title + '>'+odataButt+odataButt2+'</td></tr>'+cc; 
+html = html + '</table>';
+
+document.write(html); // This prints out now at top of each WP page/post
+
 // Printing all data for input next
-var datas = <?php echo $points ?>;
+// var datas = <?php echo $points ?>;
 
 // drawChart(datas,args2js);
 
 // if (1 == 0) {
 
-if (datas.length == 0) {
+if (args2js.data.length == 0) {
 
 	// External file
 	var datafile = "<?php echo $args2js["datafile"] ?>";
@@ -148,26 +181,30 @@ if (datas.length == 0) {
 	// This is how d3.js wants to read external files: AJAX calls + GETs, not pretty but works
 	if (datafile.indexOf('.tsv') > 0)
 	d3.tsv(datafile, function(error, data) {
-		drawChart(data,args2js);
+		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.csv') > 0)
 	d3.csv(datafile, function(error, data) { 
-		drawChart(data,args2js);
+		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.json') > 0)
 	d3.json(datafile, function(error, data) {
-		drawChart(data,args2js);
+		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.xml') > 0)
 	d3.xml(datafile, function(error, data) {
 		// console.info(data);
 		// d3doc = data;
 		return;  // NOT working yet: TODO NEXT ...
-		drawChart(data,args2js.title);
+		args2js.data = data;
+		drawChart(args2js);
 	});
 }
-else // data is coming via php args directly: values + labels in datas
-	drawChart(datas,args2js);
+else // data is coming via php shortcode directly here
+	drawChart(args2js);
 // d3charts[args2js.title].data = dataset;
 // }
 </script>
@@ -177,6 +214,7 @@ else // data is coming via php args directly: values + labels in datas
 // add_shortcode("drawColumns", "simpleBarsPro");
 add_shortcode("drawColumns", "simpleBarsDev");
 add_shortcode("simpleCharts", "simpleBarsDev");
+add_shortcode("simpleChartsNew", "simpleBarsDev");
 
 // All minor PHP functions & what they do
 
@@ -242,3 +280,5 @@ function getArr($array) {
 }
 
 ?>
+
+
