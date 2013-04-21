@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 1.1.0
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,13 +12,14 @@ d3-simpleCharts offers you direct access to a few d3 basic charts and let you ad
 
 == Description ==
 
-d3-simpleCharts is here: you can start to explore the next generation W3C's sharp charts and graphs (eq SVG formats via d3.js extensive library) from your WordPress blogs easily.
+d3-simpleCharts is here: you can start to show the next generation W3C's sharp charts and graphs (eq SVG formats via d3.js library) from your any WordPress blogs easily.
 
-This WP plug-in contains just 4 simple example graph types that you can call and draw by one easy to remember shortcode: 
+This WP plug-in contains just 4 simple example graph types that you can call and draw by one shortcode: 
 
   'simpleChart'
 
 The available chart types now are here:
+
 * 'Columns'
 * 'Bars'
 * 'Pie'
@@ -31,9 +32,10 @@ You can define *data input values* on the standard and uniform way from *wordpre
 Shortcode's input is preferred way always as the primary source of data values & their labels (if both are given).
 
 Three external file type formats are currently supported for input:
-* CSV
-* JSON
-* TSV (eq tab separated data values)
+
+1. CSV
+1. JSON
+1. TSV (eq tab separated data values)
 
 Note: XML should be easy to add soon, a bare skeleton JS code is there existing already but parsing of document is missing at this very 1st version of plugin package.
 
@@ -47,7 +49,7 @@ Here is the most *simple example of shortcode's call* that works very well:
 
 Pretty *simple* & obvious (to create default 'Columns' chart) is it, huh?
 
-Now - to get a whole picture of all rich features - you can expand your knowledge and finally master something like this:
+Now - to get a whole picture of all rich features available here - you can expand your knowledge and finally master something like this for each new post/page on WP:
 
 [simpleChart chart='Pie' mtitle='All Animals' values='(1,2,4,8,16)' labels='(Cats,Dogs,Birds,Frogs,Bears)' xtitle="Animal race" ytitle="Pcs on wild farm" datafile="animals.json" css='{ ".bar" : {"fill" : "navy", "stroke" : "blue"} , ".axis path, .axis line" : {"stroke" : "orange", "fill" : "gray"} , " " : { "font" : "12px sans-serif"}, ".chart":{"stroke":"gray"}, ".axis .xtpos":{"x":"200"} }'  width="800" height="600" format="+0.02%" title="These animals are living free around." minrange="1.0" url="http://en.wikipedia.org/wiki/Wild_animals"]
 
@@ -56,23 +58,37 @@ Now - to get a whole picture of all rich features - you can expand your knowledg
 You can customize almost every main aspect of new created chart by feeding in legal CSS and SVG attributes to the graphs. These attributes are listed & documented openly on *W3C's* sites, like: 
 
 *www.w3schools.com*
+.
 
 **Key Features Briefly**
 
-* Data input from shortcode / external files on server.
-* New chart's position control based on CSS.
-* New chart's look & feel control based on CSS.
-* Many charts on the same page, no problem.
-* Supporting W3C's globally recognized web standards: DOM, SVG, and CSS.
-* Supporting D3 developers society for powerfull JS graphics (on GitHub).
+1. Chart type switcher buttons to compare data different ways.
+1. New chart's vertical position control based on CSS.
+1. New chart's total look & feel control based on CSS.
+1. Smooth gradient coloring of each bar of chart available by request.
+1. Many embedded charts on the same page, no problem.
+1. Supporting W3C's globally recognized web standards: DOM, SVG, and CSS.
+.
 
-All software is written also in a style that should be easy to expand & understand for any normal web developer of WP & PHP language.
+**Data input and output**
 
-Also, there is left on purpose a plenty of 'console.info()' debugging calls for essential variables of JS that you can activate in order to see what is really going on when SVG drawing takes its place (= consoles of FireBug & Chrome). 
+* Data importing from shortcode / external files (CSV/TSV/JSON) on server.
+* Exporting: Excel and JSON formats (eq big data).
+* Optional smart parsing of 2x2 matrix data points files row by row.
+.
+
+**Software Upgrades & Further Development**
+
+* Distributed development via GitHub too (welcome to fork and improve core's code for "d3-simpleCharts", note BIG 'C' in name).
+* Supporting D3 (eq data driven documents) developers society for powerfull JS graphics (d3.js on GitHub).
+
+All software is written also in a style that should be easy to expand & understand for any normal web developer of WordPress, DOM, JS & PHP languages. 
+
+Also, there is left on purpose a plenty of 'console.info(foo)' debugging calls for those essential variables of JS that you can activate in order to see what is really going on when SVG drawing takes its place (= consoles of FireBug & Chrome). 
 
 D3 lib is abit tricky to grasp at first - take your time & fill your coffee machine :-)
 
-Documentation for shortcode's all arguments is coming soon when we just shall find out enough time - after business hours - to write it down. Please, be patient.
+Documentation for shortcode's all arguments is coming soon (at Wiki of GitHub) when we just find out enough time - after business hours - to write it all down. Please, be patient.
 
 
 **HAPPY Charting on WordPress !**
@@ -154,13 +170,20 @@ This could change in future's versions - stay tuned in !
 
 == Screenshots ==
 
+1. Shows how 'Columns' looks out together with home's pets example.
+2. Shows how 'Area' looks out together with home's pets example.
+3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
+
 == Changelog ==
 
-= 1.0.0 =
-Version 1.0.0 - This is very first release of the d3-simpleCharts plugin.
+= 1.1.1 =
+Version 1.1.1 - A few screenshots added.
 
 = 1.1.0 =
 Version 1.1.0 - Charts fixed and optional menu to other data sets added.
+
+= 1.0.0 =
+Version 1.0.0 - This is very first release of the d3-simpleCharts plugin.
 
 == Upgrade Notice ==
 
