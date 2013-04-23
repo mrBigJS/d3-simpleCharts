@@ -88,7 +88,10 @@ Also, there is left on purpose a plenty of 'console.info(foo)' debugging calls f
 
 D3 lib is abit tricky to grasp at first - take your time & fill your coffee machine :-)
 
-Documentation for shortcode's all arguments is coming soon (at Wiki of GitHub) when we just find out enough time - after business hours - to write it all down. Please, be patient.
+Documentation for shortcode's all arguments is buildind up (at Wiki of GitHub) slowly too. Please, be patient.
+
+
+[d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
 
 
 **HAPPY Charting on WordPress !**
@@ -139,6 +142,13 @@ Now, since all shortcode processing happens at first of WP post (/page) the grap
 
 This could change in future's versions - stay tuned in !
 
+= How can I develope my XYZ around this code? =
+
+We support open development via GitHub's programmers here:
+
+[d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
+
+
 **Our Example Charts** (ALIVE: real WP pages with that same 'Pets' data values & labels)  
 
 [d3-simpleCharts, columns]: http://www.tere-tech.eu/balticfinns/?page_id=28503
@@ -149,7 +159,6 @@ This could change in future's versions - stay tuned in !
             "Shows how 'Pie' looks out together with home's pets example."			
 [d3-simpleCharts, area]: http://www.tere-tech.eu/balticfinns/?page_id=28524
             "Shows how 'Area' looks out together with home's pets example."
-
 
 *Very Good Further Docs for this PlugIn*
 
