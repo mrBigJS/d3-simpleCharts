@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,6 @@ This WP plug-in contains just 4 simple example graph types that you can call and
   'simpleChart'
 
 The available chart types now are here:
-
 * 'Columns'
 * 'Bars'
 * 'Pie'
@@ -181,6 +180,9 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
 
 == Changelog ==
+
+= 1.1.5 =
+Version 1.1.5 - Finally tagging right subversion public on wordpress svn system.
 
 = 1.1.3 =
 Version 1.1.3 - Adding some pointers to GitHub's full documentation.
