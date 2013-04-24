@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull D3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.1.5
+Version: 1.2.0
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -105,6 +105,11 @@ if ($data['id'])
 	$args2js['id'] = $data['id'];
 */
 
+// Some config flags about buttons on layout: visible or not (def: yes)
+$switcher = testDef(0,$data['noswitcher']); // Chart type switcher
+$series = testDef(0,$data['noseries']); // More data button (2x2 series)
+$export = testDef(0,$data['noexport']); // Data export buttons
+
 // Including minimized version of d3.js from its CDN and our core JavaScript lib of simple charts
 ?>
 <script src="http://d3js.org/d3.v3.min.js"></script> 
@@ -141,7 +146,15 @@ butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[
 
 var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
-var html = '<table style="<?php echo $backstyle ?>">';  // Our container is <table> element with custom styles
+if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher
+		butts = '';
+}
+if (<?php echo $series ?>==1) {  // No buttons: more data
+		otherbutt = '';
+}
+
+// Our chart container in HTML is <table> element with custom styles
+var html = '<table style="<?php echo $backstyle ?>">'; 
 html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b></td></tr>'; // Main title + its style
 html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
 if (url) // Here is where D3 draws its chart, finally
@@ -155,9 +168,14 @@ html = html + '<tr><td id="'+ id + '" title="Data values"></td></tr>'; // Contai
 
 var cc = '<tr><td style="font-size:x-small; float:left">Run by <b>W3C</b> technology</td></tr>';
 
-var odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for easy Copy & Paste here."> BIG DATA </button>';
+var odataButt = '';
+var odataButt2 = '';
 
-var odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for easy Copy & Paste here."> Excel data </button>';
+if (<?php echo $export ?>==0) {
+
+odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for easy Copy & Paste here."> BIG DATA </button>';
+odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for easy Copy & Paste here."> Excel data </button>';
+}
 
 html = html + '<tr><td id="'+ chartid + 'odata" ' + title + '>'+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
@@ -280,5 +298,3 @@ function getArr($array) {
 }
 
 ?>
-
-
