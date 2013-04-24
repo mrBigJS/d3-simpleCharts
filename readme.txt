@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,18 +49,21 @@ Here is the most *simple example of shortcode's call* that works very well:
 
 Pretty *simple* & obvious (to create default 'Columns' chart) is it, huh?
 
+* [More basic things on Wiki](https://github.com/mrBigJS/d3-simpleCharts/wiki/Getting-started)
+
 Now - to get a whole picture of all rich features available here - you can expand your knowledge and finally master something like this for each new post/page on WP:
 
 [simpleChart chart='Pie' mtitle='All Animals' values='(1,2,4,8,16)' labels='(Cats,Dogs,Birds,Frogs,Bears)' xtitle="Animal race" ytitle="Pcs on wild farm" datafile="animals.json" css='{ ".bar" : {"fill" : "navy", "stroke" : "blue"} , ".axis path, .axis line" : {"stroke" : "orange", "fill" : "gray"} , " " : { "font" : "12px sans-serif"}, ".chart":{"stroke":"gray"}, ".axis .xtpos":{"x":"200"} }'  width="800" height="600" format="+0.02%" title="These animals are living free around." minrange="1.0" url="http://en.wikipedia.org/wiki/Wild_animals"]
 
-*Very advanced & powerfull shortcode's call* above to draw just the way you want your professional embedded super fast vector graphics. 
+* Very advanced & powerfull shortcode's call* above to draw just the way you want your professional embedded super fast vector graphics.
+* [Advanced in detail on Wiki](https://github.com/mrBigJS/d3-simpleCharts/wiki/Advanced-examples)
 
 You can customize almost every main aspect of new created chart by feeding in legal CSS and SVG attributes to the graphs. These attributes are listed & documented openly on *W3C's* sites, like: 
 
 *www.w3schools.com*
 .
 
-**Key Features Briefly**
+**Key Features**
 
 1. Chart type switcher buttons to compare data different ways.
 1. New chart's vertical position control based on CSS.
@@ -79,19 +82,18 @@ You can customize almost every main aspect of new created chart by feeding in le
 
 **Software Upgrades & Further Development**
 
-* Distributed development via GitHub too (welcome to fork and improve core's code for "d3-simpleCharts", note BIG 'C' in name).
-* Supporting D3 (eq data driven documents) developers society for powerfull JS graphics (d3.js on GitHub).
+* Distributed collaborative development via GitHub too (= welcome to fork and improve core's code for "d3-simpleCharts", note BIG 'C' in name).
+* Supporting D3 (eq data driven documents) developers society for powerfull JavaScript graphics (d3.js on GitHub).
 
 All software is written also in a style that should be easy to expand & understand for any normal web developer of WordPress, DOM, JS & PHP languages. 
 
 Also, there is left on purpose a plenty of 'console.info(foo)' debugging calls for those essential variables of JS that you can activate in order to see what is really going on when SVG drawing takes its place (= consoles of FireBug & Chrome). 
 
-D3 lib is abit tricky to grasp at first - take your time & fill your coffee machine :-)
+d3 lib is abit tricky to grasp at first - take your time & fill your coffee machine :-)
 
-Documentation for shortcode's all arguments is buildind up (at Wiki of GitHub) slowly too. Please, be patient.
+**Full open source + reference guide**
 
-
-[d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
+* [d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
 
 
 **HAPPY Charting on WordPress !**
@@ -110,7 +112,7 @@ Two WP standard ways to install the package.
 
 Or you may want to do it 'old traditional way'.
 
-1. Upload `d3-simpleCharts.php` to the `/wp-content/plugins/` directory from wordpress.com site.
+1. Upload `d3-simpleCharts.php` & `d3-simpleCharts.js` to the `/wp-content/plugins/` directory from wordpress.com site.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Start to use shortnotes '[simpleChart]' inside your posts & pages.
 
@@ -121,6 +123,7 @@ Also, we do not have time to test this software against different WP versions bu
 We warmly welcome some professional WP developer to build around this core all those fancy 'Bells & Whistles' that could nicely integrate this shortnote available to the graphical user interface of publishing new posts and pages for everyone, naturally.
 
 Let me know if you are producting suggested improvement and take this work to the next level !
+
 
 == Frequently Asked Questions ==
 
@@ -142,46 +145,35 @@ Now, since all shortcode processing happens at first of WP post (/page) the grap
 
 This could change in future's versions - stay tuned in !
 
-= How can I develope my XYZ or ABC around this code and get it included inside this package? =
+= How can I develope my fancy XYZ or ABC around this code and get it included inside this package, too? =
 
-We encourage open development for programmers (by GitHub) over here:
+We encourage open collaborative development for programmers (by GitHub) over here:
 
 [d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
 
 = So, there is no user manual at all for this WordPress plugin, huh? =
 
-User online manual & reference is building up gradually on GitHub's Wiki systems over here:
+User online manual & reference is building up gradually on GitHub's Wiki over here:
 
 [d3-simpleCharts - user's manual & reference of all functions](https://github.com/mrBigJS/d3-simpleCharts/wiki/Introduction)
 
-**Our Example Charts** (ALIVE: real WP pages with that same 'Pets' data values & labels)  
+Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.org/) client together with GitHub. It really takes the pain away from learning Git. Here is [a nice tutorial](http://techlunatic.com/2011/09/how-to-submit-your-first-plugin-to-wordpress-ultimate-guide/) about its use.
 
-[d3-simpleCharts, columns]: http://www.tere-tech.eu/balticfinns/?page_id=28503
-            "Shows how 'Columns' looks out together with home's pets example."			
-[d3-simpleCharts, bars]: http://www.tere-tech.eu/balticfinns/?page_id=28515
-            "Shows how 'Bars' looks out together with home's pets example."
-[d3-simpleCharts, pie]: http://www.tere-tech.eu/balticfinns/?page_id=28521
-            "Shows how 'Pie' looks out together with home's pets example."			
-[d3-simpleCharts, area]: http://www.tere-tech.eu/balticfinns/?page_id=28524
-            "Shows how 'Area' looks out together with home's pets example."
 
-*Very Good Further Docs for this PlugIn*
+*Very Good Further Links*
 
-[D3, All Galleries]: https://github.com/mbostock/d3/wiki/Gallery
-            "Fancy, impressive & professional charts that should inspire you to jump in."
+* [D3, All Galleries](https://github.com/mbostock/d3/wiki/Gallery
+            "Fancy, impressive & professional charts that should inspire you to jump in.")
+* [Chart's SVG standard](http://www.w3schools.com/svg/svg_reference.asp
+            "Usefull for personalizing your own visual outlook of chart contents, use together with Firebug's/Chrome's 'Inspect element' on browser's window command.")
+* [Chart's CSS styles & layout control](http://www.w3schools.com/tags/tag_table.asp
+            "Usefull for contolling chart's background look and its overall position.")
+* [D3, Tutorial](https://github.com/mbostock/d3/wiki/Tutorials
+            "Now, let's get your fingers dirty and start programming more charts!")
+* [D3, API's reference](https://github.com/mbostock/d3/wiki/API-Reference
+            "All you finally need when get up to PRO level with D3 & its cool programming universe.")
 
-[Chart's SVG standard]: http://www.w3schools.com/svg/svg_reference.asp
-            "Usefull for personalizing your own visual outlook of chart contents, use together with Firebug's/Chrome's 'Inspect element' on browser's window command."
-
-[Chart's CSS styles & layout control]: http://www.w3schools.com/tags/tag_table.asp
-            "Usefull for contolling chart's background look and its overall position."
-
-[D3, Tutorial]: https://github.com/mbostock/d3/wiki/Tutorials
-            "Now, let's get your fingers dirty and start programming more charts!"
-
-[D3, API's reference]: https://github.com/mbostock/d3/wiki/API-Reference
-            "All you finally need when get up to PRO level with D3 & its cool programming universe."
-
+			
 == Screenshots ==
 
 1. Shows how 'Columns' looks out together with home's pets example.
