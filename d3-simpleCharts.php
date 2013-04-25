@@ -2,34 +2,30 @@
 /*
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
-Description: d3 simpleCharts gives you easy and direct access to all powerfull D3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.0
+Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
+Version: 1.2.1
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
 License: GPL2
 */
-
 /*
-	d3 - Basic Charts
-	-----------------
-	This WP-plugin is meant to be a clear foundation to bridge W3C's consortium long hard work (on the areas of CSS, SVG, and DOM) and active D3 framework community's efforts to the universe of WordPress developers.
+	d3 - Charts
+	-----------
 
-	Our goal & approach is to offer a simple server's and client's open source codes that are highly modular so that you can easily tailor it just to your specific needs for high-quality charts.
+	This WP-plugin is meant to be a clear foundation to bridge W3C's consortium long hard work (on the areas of CSS, SVG, and DOM) and active d3.js framework community's efforts to the WordPress developers.
 
-	Here are 4 example charts of D3 society but the same approach can be used for any of those d3's impressive other gallery charts: just add more JavaScript functions for each new chart you want to generate on javascript file.
+	Our goal & approach is to offer a simple server's and client's open source codes that are highly modular so that you can easily tailor it just to your specific needs.
 
-	Fast Growing D3 Gallery is here:
-	* https://github.com/mbostock/d3/wiki/Gallery
-	
-	Our example should inspire you to add more charts into your visualisation purposes easily and fast and finally build up some nice UI on the posting panel of WordPress to manage it all fast and easily that benefits all of us.
+	Here are 4 example charts of D3 society but the same approach can be used for any of those d3's impressive other gallery charts: just add more JavaScript functions for each new chart type you want to generate (on d3-simpleCharts.js).
+
+	Our example should inspire you to add more fancy charts into your visualisation purposes easily and fast and finally build up some nice GUI on the posting panel of WordPress to manage it all for the benefits of all of us.
 
 	Welcome to the journey of professional SVG charts !	
 
 
-
- 	simpleBars
-	----------
+ 	simpleBarsDev
+	-------------
 	- Generating new simple chart from values + their labels
 */
 function simpleBarsDev($data) {
@@ -66,7 +62,7 @@ $args2js["data"] = $points2; // Data set: labels & values in JSON array
 
 // All these X labels inside $data['X'] are open and available from php shortnote for user
 
-$args2js["chart"] = testDef("Columns",$data['chart']); // Asked basic chart type + its default: simpleColumns
+$args2js["chart"] = testDef("Columns",$data['chart']); // Asked basic chart type or its default: Columns
 $args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
 $args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
 
@@ -87,6 +83,9 @@ $args2js['endbar'] = testDef('',$data['endbar']); // Starting color of pie chart
 
 $main = testDef("",$data['mtitle']); // Major title
 $mstyle = testDef("text-align:right",$data['mstyle']); // Title's position & style <TD>
+$logo = testDef("",$data['logo']); // Possible url of logo (eq company symbol, etc)
+if (strlen($logo))
+	$logo = ' <img src="' . $logo . '"> ';
 
 $moredata = testDef(" More Data ",$data['moredata']); // Title's position & style <TD>
 
@@ -110,12 +109,17 @@ $switcher = testDef(0,$data['noswitcher']); // Chart type switcher
 $series = testDef(0,$data['noseries']); // More data button (2x2 series)
 $export = testDef(0,$data['noexport']); // Data export buttons
 
-// Including minimized version of d3.js from its CDN and our core JavaScript lib of simple charts
+$jquery = testDef(0,$data['jquery']); // If jQuery should be loaded (eq not existing on blog before)
+if ($jquery)
+	echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
+
+// Including minimized version of d3.js from its CDN and our core JavaScript lib
 ?>
 <script src="http://d3js.org/d3.v3.min.js"></script> 
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script> 
 
 <script>
+
 // First things at first: generate the HTML -container for its new chart
 var url = '<? echo $url ?>';
 var chartid = '<? echo $chartid ?>';
@@ -154,8 +158,8 @@ if (<?php echo $series ?>==1) {  // No buttons: more data
 }
 
 // Our chart container in HTML is <table> element with custom styles
-var html = '<table style="<?php echo $backstyle ?>">'; 
-html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b></td></tr>'; // Main title + its style
+var html = '<table style="<?php echo $backstyle ?>">';
+html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo ?></td></tr>'; // Main title & logo (+ its CSS style)
 html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
 if (url) // Here is where D3 draws its chart, finally
 	html = html + '<tr><td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
