@@ -3,8 +3,8 @@ Contributors: Jouni Santara, TERE-tech ltd
 Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
-Tested up to: 3.3.2
-Stable tag: 1.2.3
+Tested up to: 3.5.1
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,11 +18,7 @@ This WP plug-in contains just 4 simple example graph types that you can call and
 
   'simpleChart'
 
-The available chart types now are here:
-* 'Columns'
-* 'Bars'
-* 'Pie'
-* 'Area'
+The available chart types now are here: 'Columns', 'Bars', 'Pie', 'Area'
 
 Pretty *simple* and obvious there, yes!!?
 

@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.3
+Version: 1.2.4
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -33,7 +33,7 @@ function simpleBarsDev($data) {
 // Unique ID name for each new chart +
 // Generate all CSS to WP page + receive a unique ID of graph
 $uniq = styleBars($data['css']);
-$chartid = "chart" . $uniq;
+// $chartid = "chart" . $uniq;
 
 // Testing ALL user's given arguments from php side + setting defauls
 
@@ -110,9 +110,12 @@ if ($data['id'])
 */
 
 // Some config flags about buttons on layout: visible or not (def: yes)
-$switcher = testDef(0,$data['noswitcher']); // Chart type switcher
-$series = testDef(0,$data['noseries']); // More data button (2x2 series)
-$export = testDef(0,$data['noexport']); // Data export buttons
+$switcher = testDef(0,$data['noswitcher']); // No chart type switcher buttons
+$series = testDef(0,$data['noseries']); // No more data button (2x2 series)
+$export = testDef(0,$data['noexport']); // No data export buttons
+	$exportsvg = testDef(0,$data['exportsvg']); // Chart's SVG HTML visible for export button, def: no
+$embed = testDef(0,$data['noembed']); // No embed link visible
+$embedtitle = testDef('Embed',$data['embedtitle']); // Custom title for embed
 
 $jquery = testDef(0,$data['jquery']); // If jQuery should be loaded (eq not existing on blog before, default:existing)
 if ($jquery)
@@ -127,7 +130,8 @@ if ($jquery)
 
 // First things at first: generate the HTML -container for its new chart
 var url = '<? echo $url ?>';
-var chartid = '<? echo $chartid ?>';
+var chartid = 'chart<? echo $uniq ?>';
+var tableid = 'table<? echo $uniq ?>';
 var title = '<? echo $title ?>';
 var url = '<? echo $url ?>';
 id = '<? echo $args2js['id'] ?>';
@@ -155,22 +159,34 @@ butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[
 
 var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
-if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher
+if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher 
 		butts = '';
 }
 if (<?php echo $series ?>==1) {  // No buttons: more data
 		otherbutt = '';
 }
 
+// Embed link element
+var cid = 'chart<? echo $uniq ?>';
+var url2 = 'wp-content/plugins/d3-simpleCharts/embed.php';  // encodeURIComponent(el.innerText)
+var echart = $('#'+chartid);
+var cid2 = "'"+cid+"'";
+// var elink = '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>';
+// var elink = '<a onclick="showembed('+cid2+')" target="_blank"><?php echo $embedtitle ?></a>';
+elink = '';
+var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+'</sub></td><tr>';
+
 // Our chart container in HTML is <table> element with custom styles
-var html = '<br /><br /><table style="<?php echo $backstyle ?>">';
+var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle ?>">';
+// if ('<? echo $embed ?>')
+	html = html+embed;
 html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
 html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
-if (url) // Here is row where D3 draws its chart, finally
+if (url) // Here is row where D3 draws its chart - finally
 	html = html + '<tr><td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
 else
 	html = html + '<tr><td id="'+ chartid + '" ' + title + '></td></tr>';
- 
+
 var id = "'"+chartid+"'";
 var odform = "'table'";
 html = html + '<tr><td id="'+ id + '" title="Data values"></td></tr>'; // Container of big data
@@ -182,21 +198,23 @@ var odataButt2 = '';
 
 if (<?php echo $export ?>==0) {
 
-odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for easy Copy & Paste here."> BIG DATA </button>';
-odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for easy Copy & Paste here."> Excel data </button>';
+// Data export buttons
+var odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for Copy & Paste to big data applications."> BIG DATA </button>';
+var odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for Copy & Paste to Excel here."> Excel data </button>';
+var odataButt3 = '';
+if (<?php echo $exportsvg ?>==1) {
+	odform="'svg'";
+	odataButt3 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+', cid)" title="Open chart\'s html for Copy & Paste to web page here."> Chart </button>';
+}
 }
 
-html = html + '<tr><td id="'+ chartid + 'odata" ' + title + '>'+odataButt+odataButt2+'</td></tr>'+cc; 
+html = html + '<tr><td id="'+ chartid + 'odata" ' + title + '>'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
 
-document.write(html); // This prints out now at top of each WP page/post
+document.write(html); // This prints out chart (now at top of each WP page/post)
 
-// Printing all data for input next
+// Printing all data for input next - debug
 // var datas = <?php echo $points ?>;
-
-// drawChart(datas,args2js);
-
-// if (1 == 0) {
 
 if (args2js.data.length == 0) {
 
@@ -232,18 +250,25 @@ if (args2js.data.length == 0) {
 }
 else // data is coming via php shortcode directly here
 	drawChart(args2js);
-// d3charts[args2js.title].data = dataset;
-// }
+
+
+function showembed(chartid) {
+
+	var node = $('#'+chartid).html();
+	console.info(node);
+	// console.info(encodeURIComponent(node));
+	// return encodeURIComponent(node);
+	// '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>'
+}
 </script>
 <?php
 };
 
-// add_shortcode("drawColumns", "simpleBarsPro");
 add_shortcode("drawColumns", "simpleBarsDev");
 add_shortcode("simpleCharts", "simpleBarsDev");
 add_shortcode("simpleChartsNew", "simpleBarsDev");
 
-// All minor PHP functions & what they do
+// All minor PHP functions
 
 // Helps for setting of default arguments
 function testDef($setupV, $userV) {

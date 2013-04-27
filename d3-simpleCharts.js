@@ -1,7 +1,7 @@
-function openData(args2js,id,format) {
+function openData(args2js,id,format,svgid) {
 
 	var bdid = id+'_bdme';
-	var html = '<div id="'+bdid+'" class="noteitem"><b>BIG DATA</b>';
+	var html = '<div id="'+bdid+'" class="noteitem">';
 	html += '<button style="float:right" title="Close data area." onclick="removeMe(\''+bdid+'\')"> [X] </button><br />';
 
 	var data = args2js.data;
@@ -20,7 +20,9 @@ function openData(args2js,id,format) {
 			labels.push(data[i].label);
 			values.push(data[i].value);
 		}
-		html += '<table style="width:90%; color:navy; border:1px"><thead style="font-weight:bold">' + printArr(labels,1) +'</thead><tbody>'+ printArr(values,1) + '</tbody></table>';
+		html += '<b>Excel data table</b><table style="width:90%; color:navy; border:1px"><thead style="font-weight:bold">' + printArr(labels,1) +'</thead><tbody>'+ printArr(values,1) + '</tbody></table>';
+	} else if(format == 'svg') {
+		html += '<b>Chart in HTML</b><br />'+$('#'+svgid).html().replace(/</g,"&lt;").replace(/>/g,"&gt;");  // &lt; &gt;
 	} else
 		html += JSON.stringify(data).replace(/{/g," <br />{");
 
@@ -709,5 +711,3 @@ function getColorRamp(startColor, steps, endColor) {
 	// console.info(colors);
 	return colors;
 }
-
-
