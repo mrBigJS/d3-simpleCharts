@@ -80,7 +80,6 @@ function pickColumn(i, data) {
 function valSort(a,b) { // custom sort by value fields
 	return a.value < b.value;
 }
-
 /*
 	drawChart
 	---------
@@ -711,3 +710,24 @@ function getColorRamp(startColor, steps, endColor) {
 	// console.info(colors);
 	return colors;
 }
+
+// A function to show SVG element into new window
+  function svgWin( svgid, logoUrl, css, args2js ) {
+
+	var header = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> ';
+	var svg = $('#'+svgid).html();
+	if (css)
+		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simpleCharts/'+css+'" type="text/css" media="all"/> ';
+	else
+		css = '';
+	if (logoUrl)
+		logoUrl = '<img src="'+logoUrl+'">';
+	var printB = '<button style="float:right" onClick="window.print()">Print Chart</button> ';
+	var html = header+' <html><head><title>Chart('+args2js.chart+'): '+args2js.title+'</title>'+css+'</head> ';
+	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3>'+args2js.title+'</h3>'+svg+'<br /><br />'+printB+' </body></html> ';
+
+	var cwidth = 150 + parseInt(args2js.width);
+	var cheight = 200 + parseInt(args2js.height);
+	myWindow=window.open('','','width='+cwidth+',height='+cheight);
+	myWindow.document.writeln(html);
+   }

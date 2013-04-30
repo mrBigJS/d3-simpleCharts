@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.4
+Version: 1.2.5
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -121,9 +121,14 @@ $jquery = testDef(0,$data['jquery']); // If jQuery should be loaded (eq not exis
 if ($jquery)
 	echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
 
-// Including minimized version of d3.js from its CDN and our core JavaScript lib
+// Including minimized version of d3.js
+if ($cdn)
+	echo '<script src="http://d3js.org/d3.v3.min.js"></script>';
+else
+	echo '<script src="wp-content/plugins/d3-simpleCharts/d3.v3.min.js"></script>';
+
+// Including our core JavaScript lib
 ?>
-<script src="http://d3js.org/d3.v3.min.js"></script> 
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
 
 <script>
@@ -169,15 +174,24 @@ if (<?php echo $series ?>==1) {  // No buttons: more data
 // Embed link element
 var cid = 'chart<? echo $uniq ?>';
 var url2 = 'wp-content/plugins/d3-simpleCharts/embed.php';  // encodeURIComponent(el.innerText)
-var echart = $('#'+chartid);
 var cid2 = "'"+cid+"'";
+
+// embed link, TODO
 // var elink = '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>';
 // var elink = '<a onclick="showembed('+cid2+')" target="_blank"><?php echo $embedtitle ?></a>';
 elink = '';
-var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+'</sub></td><tr>';
+// newwin = '';
+
+// new window popup's opening
+var logofile = '<?php echo testDef("",$data["logo"]) ?>';
+	logofile = "'"+logofile+"'";
+var cssfile = "'d3chart.css'"; 
+var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
+
+var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>';
 
 // Our chart container in HTML is <table> element with custom styles
-var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle ?>">';
+var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle ?>" width="'+(100+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
 html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
@@ -213,7 +227,7 @@ html = html + '</table>';
 
 document.write(html); // This prints out chart (now at top of each WP page/post)
 
-// Printing all data for input next - debug
+// Printing all data for input next - debug 
 // var datas = <?php echo $points ?>;
 
 if (args2js.data.length == 0) {

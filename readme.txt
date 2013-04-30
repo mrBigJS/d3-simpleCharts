@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -176,6 +176,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
 
 == Changelog ==
+
+= 1.2.5 =
+Version 1.2.5 - Chart on new window link, adding support of css style file for svg, fixing bug of chart's width at start (on Chrome).
+
+= 1.2.4 =
+Version 1.2.4 - Cleaning the code.
 
 = 1.2.3 =
 Version 1.2.3 - Centering chart's title and introducing positioning of logo option.
