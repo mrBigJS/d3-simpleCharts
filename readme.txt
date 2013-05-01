@@ -177,6 +177,9 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 
 == Changelog ==
 
+= 1.2.6 =
+Version 1.2.6 - Adding basic icon buttons for the chart and a folder for their pics (eq style of open office).
+
 = 1.2.5 =
 Version 1.2.5 - Chart on new window link, adding support of css style file for svg, fixing bug of chart's width at start (on Chrome).
 

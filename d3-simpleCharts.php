@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.5
+Version: 1.2.6
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -67,7 +67,7 @@ $args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
 $args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
 
 $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file for data set
-$args2js['row'] = testDef('',$data['row']); // Row of chosen data from multidimension input file
+$args2js['row'] = testDef('1',$data['row']); // Row of chosen data from multidimension input file
 $args2js['column'] = testDef('',$data['column']); // Column of chosen data from multidimension input file
 
 $args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis
@@ -152,15 +152,19 @@ if (typeof d3charts == 'undefined')
 // d3charts[args2js.title] = args2js;
 d3charts.push(args2js);
 
+var rootp = 'wp-content/plugins/d3-simpleCharts/icons/';
+
 // All existing chart types & their names
 var ctype = ["'Columns'","'Bars'","'Area'","'Pie'"];
+var cicons = ["columns.png","bars.png","area.png","pie.png"];
 // Referring to just now added one for creating its buttons
 var last_chart = d3charts.length-1;
-var fontx = ' style="font-size:xx-small; float:right" ';
-var butts = '<span style="background-color:darkgray"><button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> '+ctype[0]+' </button>';
-butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> '+ctype[1]+' </button>';
-butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> '+ctype[2]+' </button>';
-butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> '+ctype[3]+' </button></span>';
+var fontx = ' style="font-size:xx-small; cursor:pointer;" ';
+var butts = '<span style="background-color:darkgray; float:right;">';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> <img src="'+rootp+cicons[0]+'"></button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> <img src="'+rootp+cicons[1]+'"></button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> <img src="'+rootp+cicons[2]+'"></button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button></span>';
 
 var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
@@ -186,7 +190,9 @@ elink = '';
 var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 	logofile = "'"+logofile+"'";
 var cssfile = "'d3chart.css'"; 
-var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
+// var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
+var rootp = 'wp-content/plugins/d3-simpleCharts/';
+var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>';
 
@@ -222,7 +228,7 @@ if (<?php echo $exportsvg ?>==1) {
 }
 }
 
-html = html + '<tr><td id="'+ chartid + 'odata" ' + title + '>'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
+html = html + '<tr><td id="'+ chartid + 'odata" ' + title + ' style=" float:right;">'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
 
 document.write(html); // This prints out chart (now at top of each WP page/post)
