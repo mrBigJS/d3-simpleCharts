@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.5
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -176,6 +176,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
 
 == Changelog ==
+
+= 1.2.8 =
+Version 1.2.8 - Added 'Line' chart type drawing + its icon (thanks to rickshaw visualization lib!).
+
+= 1.2.7 =
+Version 1.2.7 - Bug fix: row option default set for reading 2x2 matrix input data.
 
 = 1.2.6 =
 Version 1.2.6 - Adding basic icon buttons for the chart and a folder for their pics (eq style of open office).

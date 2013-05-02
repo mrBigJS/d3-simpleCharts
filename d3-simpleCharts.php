@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.6
+Version: 1.2.8
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -128,6 +128,14 @@ else
 	echo '<script src="wp-content/plugins/d3-simpleCharts/d3.v3.min.js"></script>';
 
 // Including our core JavaScript lib
+/*
+<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.css" />
+<script src="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.min.js"></script>
+*/
+// if ($data['chart'] == 'Line') {
+	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" />';
+	echo '<script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>';
+// }
 ?>
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
 
@@ -155,8 +163,8 @@ d3charts.push(args2js);
 var rootp = 'wp-content/plugins/d3-simpleCharts/icons/';
 
 // All existing chart types & their names
-var ctype = ["'Columns'","'Bars'","'Area'","'Pie'"];
-var cicons = ["columns.png","bars.png","area.png","pie.png"];
+var ctype = ["'Columns'","'Bars'","'Area'","'Line'","'Pie'"];
+var cicons = ["columns.png","bars.png","area.png","line.png","pie.png"];
 // Referring to just now added one for creating its buttons
 var last_chart = d3charts.length-1;
 var fontx = ' style="font-size:xx-small; cursor:pointer;" ';
@@ -164,7 +172,8 @@ var butts = '<span style="background-color:darkgray; float:right;">';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> <img src="'+rootp+cicons[0]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> <img src="'+rootp+cicons[1]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> <img src="'+rootp+cicons[2]+'"></button>';
-butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button></span>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[4]+')"> <img src="'+rootp+cicons[4]+'"> </button></span>';
 
 var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
@@ -202,10 +211,12 @@ var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle 
 	html = html+embed;
 html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
 html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
+var chartX = '<div style="float:right" id="'+ chartid + '"></div>';
 if (url) // Here is row where D3 draws its chart - finally
 	html = html + '<tr><td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
 else
-	html = html + '<tr><td id="'+ chartid + '" ' + title + '></td></tr>';
+	// html = html + '<tr><td id="'+ chartid + '" ' + title + '></td></tr>';
+	html = html + '<tr><td ' + title + '>'+chartX+'</td></tr>';
 
 var id = "'"+chartid+"'";
 var odform = "'table'";

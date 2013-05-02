@@ -114,6 +114,9 @@ if (args2js.row) {
 	args2js.colors = getColorRamp(args2js.startbar, args2js.data.length, args2js.endbar);
 	// console.info(args2js);
 
+	// Emptying this chart's space
+	$('#chart'+args2js.uniq).empty();
+
 	var data = args2js.data;  // Taking data out & more compatible for charting modules below
 	if (args2js.chart == 'Columns')
 		simpleCols(data,args2js)
@@ -123,6 +126,8 @@ if (args2js.row) {
 		simpleArea(data,args2js);
 	else if (args2js.chart == 'Pie')
 		simplePie(data,args2js)
+	else if (args2js.chart == 'Line')
+		line(data,args2js)
 	else
 		console.error('No legal chart type given - if defined check CAPITAL vs small letters in name!');
 }
@@ -654,6 +659,153 @@ function checkTicks(args2js,height,width,xy,xtype) {
 			.attr("x2", xy);
 	}
 }
+}
+// Applying rickshaw's lib for line chart here
+function line(datas,args2js) {
+
+var Xs = new Array();
+Xs.push( {x:0, y:parseFloat(args2js.data[0].value)} );
+
+var Xmap = new Object();
+Xmap[0] = '';
+
+var last = 0;
+for (i=0; i<args2js.data.length; i++) {
+	last = parseFloat(args2js.data[i].value);
+	Xs.push( { x:i+1, y:parseFloat(args2js.data[i].value) } );
+	// Xmap.push( { i:args2js.data[i].label } );
+	Xmap[i+1] = args2js.data[i].label;
+}
+Xs.push( { x:Xs.length, y:last } );
+
+var mycolor = "navy"; // def. color
+if (args2js.startbar)
+	mycolor = args2js.startbar;
+
+var ymin = 'auto';
+if (args2js.minrange)
+	ymin = args2js.minrange;	
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"+args2js.uniq),
+	renderer: 'line',
+	min: ymin,
+	height: args2js.height, 	//300,
+	width: args2js.width, 		// 800,
+	series: [ 
+			{ data: Xs, color: mycolor, name:"minu sarja" } // TODO: args2js.title }
+/* // Ex. of 2 data series
+{ data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 } ], color: "#c05020" }, 
+{ data: [ { x: 0, y: 80 }, { x: 1, y: 200 }, { x: 2, y: 100 } ], color: "#30c020" }
+*/
+]
+} );
+graph.renderer.setTension(1);  // Set < 1 if app needs to interpolate smooth curves
+// console.info(graph.renderer.domain());
+
+var y_ticks = new Rickshaw.Graph.Axis.Y( {
+	graph: graph,
+	orientation: 'right',
+	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+	pixelsPerTick: 20,
+	element: document.getElementById('y_axis'),
+} );
+
+// Labels of x-axis come in
+var format = function(n) {
+var map = Xmap;
+// { 0: 'zero', 1: 'first', 2: 'second' }; // ex. of simple input test object
+return map[n];
+}
+
+var x_ticks = new Rickshaw.Graph.Axis.X( {
+	graph: graph,
+	orientation: 'top',
+	element: document.getElementById('x_axis'),
+	pixelsPerTick: Math.round( args2js.width/(args2js.data.length+1) ),
+	tickFormat: format
+} );
+// Print it all out
+graph.render();
+
+// TODO: fix hover's popup bubble position
+/*
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+graph: graph,
+formatter: function(series, x, y) {
+// var date = '<span class="date">' + new Date(x * 1000).toUTCString() + '</span>';
+var swatch = '<span class="detail_swatch" style="background-color: ' + mycolor + '"></span>';
+var content = swatch + series.name + ": " + y + '<br>' + args2js.data[x].label;
+return content;
+} 
+} );
+*/
+// Setting text outlook by jQuery
+$('#chart'+args2js.uniq+' text').css('font','8px arial,sans-serif');
+
+return;
+
+/* Area chart's example
+var graph = new Rickshaw.Graph( {
+element: document.querySelector("#chart"+args2js.uniq),
+width: 500,
+height: 200,
+series: [{
+color: 'steelblue',
+data: [
+{ x: 0, y: 40 },
+{ x: 1, y: 49 },
+{ x: 2, y: 38 },
+{ x: 3, y: 30 },
+{ x: 4, y: 32 } ]
+}]
+});
+console.info(graph);
+
+graph.render(); 
+
+return;
+*/
+}
+
+function nvPie2() {
+ nv.addGraph(function() {
+   var chart = nv.models.pieChart()
+       .x(function(d) { return d.label })
+       .y(function(d) { return d.value })
+       .showLabels(true)
+       .labelThreshold(.05)
+       .donut(true);
+
+     d3.select("#chart2 svg")
+         .datum(exampleData())
+       .transition().duration(1200)
+         .call(chart);
+ 
+   return chart;
+ });
+}
+
+function exampleData() {
+   return [
+   {
+     key: "Cumulative Return",
+     values: [
+       { 
+         "label" : "CDS / Options" ,
+         "value" : 29.765957771107
+       } , 
+       { 
+         "label" : "Cash" , 
+         "value" : 0
+       } , 
+       { 
+         "label" : "Corporate Bonds" , 
+         "value" : 32.807804682612
+       }
+	]
+	}
+	];
 }
 
 // Generates color of bars/pie slices based on given starting and ending colors and returns its HTML color codes array
