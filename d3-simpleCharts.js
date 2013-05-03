@@ -48,7 +48,7 @@ function pickRow(i, data) {
 
 	if (i>data.length)
 		i = data.length;
-
+console.info('pickRow!');
 	// Reading data from data's row
 	// Assuming that object is: { FOO, label1:value2, label2:value2, ... }
 	var elem = 0;
@@ -71,14 +71,17 @@ function pickRow(i, data) {
 	return out;
 }
 
-function pickColumn(i, data) {
+function pickColumn(i, data) { // TODO...
 
 	console.info(data[data.length-1]);
 	return data;
 }
 
-function valSort(a,b) { // custom sort by value fields
+function cbaSort(a,b) { // custom sort by values of data (desc.)
 	return a.value < b.value;
+}
+function abcSort(a,b) { // custom sort (asc.)
+	return a.value > b.value;
 }
 /*
 	drawChart
@@ -94,18 +97,23 @@ if (row)
 if (column)
 	args2js.column = column;
 
-if (args2js.row) {
+if (args2js.datafile  && args2js.row) {
 	// Backup of (file's) input for later JS hooks
 	args2js.backup = args2js.data;
 	args2js.data = pickRow(args2js.row, args2js.data);
 	args2js.row = 0;
-} else if (args2js.column) {
+} else if (args2js.datafile && args2js.column) {
 	// Backup of (file's) input for later JS hooks
 	args2js.backup = args2js.data;
 	args2js.data = pickColumn(args2js.column, args2js.data);
 	args2js.column = 0;
-}	
-	args2js.data.sort(valSort);
+}
+	console.info(args2js.data);
+	if (args2js.sort) // Sort
+		if (args2js.sort == 'abc')
+			args2js.data.sort(abcSort)
+		else if (args2js.sort == 'cba')
+			args2js.data.sort(cbaSort);
 
 	if (ctype) // Global chart type can be overwritten by ctype input
 		args2js.chart = ctype;
@@ -118,18 +126,18 @@ if (args2js.row) {
 	$('#chart'+args2js.uniq).empty();
 
 	var data = args2js.data;  // Taking data out & more compatible for charting modules below
-	if (args2js.chart == 'Columns')
+	if (args2js.chart == 'columns')
 		simpleCols(data,args2js)
-	else if (args2js.chart == 'Bars')
+	else if (args2js.chart == 'bars')
 		simpleBars(data,args2js);
-	else if (args2js.chart == 'Area')
+	else if (args2js.chart == 'area')
 		simpleArea(data,args2js);
-	else if (args2js.chart == 'Pie')
+	else if (args2js.chart == 'pie')
 		simplePie(data,args2js)
-	else if (args2js.chart == 'Line')
+	else if (args2js.chart == 'line')
 		line(data,args2js)
 	else
-		console.error('No legal chart type given - if defined check CAPITAL vs small letters in name!');
+		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
 }
 /*
 	extendData
@@ -161,6 +169,14 @@ function initDraw() {
 	args2js.data = args2js.backup;
 	drawChart(args2js,args2js.chart,0,parseInt(row)+1);
 }
+
+function sort() {
+	console.info($('#xsort').val());
+	var stype = $('#xsort').val();
+	args2js.sort = stype;
+	drawChart(d3charts[0],args2js.chart);
+}
+
 /*
 	simpleCols
 	----------
@@ -327,6 +343,8 @@ var width = width - margin.left - margin.right,
     height = height - margin.top - margin.bottom;
 
 var x0 = Math.max(-d3.min(data), d3.max(data));
+if (args2js.maxrange)
+	x0 = args2js.maxrange;
 
 min = 0;
 if (args2js['minrange'])
@@ -471,6 +489,9 @@ if (args2js['minrange'])
 	min = args2js['minrange'];
 
 var max = d3.max(data, function(d) { return d.value; });
+if (args2js.maxrange)
+	max = args2js.maxrange;
+
 var y = d3.scale.linear()
 	.domain([min, max])
 	.range([parseInt(height),0]);
@@ -663,6 +684,8 @@ function checkTicks(args2js,height,width,xy,xtype) {
 // Applying rickshaw's lib for line chart here
 function line(datas,args2js) {
 
+// console.info(args2js.data);
+
 var Xs = new Array();
 Xs.push( {x:0, y:parseFloat(args2js.data[0].value)} );
 
@@ -686,10 +709,15 @@ var ymin = 'auto';
 if (args2js.minrange)
 	ymin = args2js.minrange;	
 
+var ymax = '';
+if (args2js.maxrange)
+	ymax = args2js.maxrange;
+
 var graph = new Rickshaw.Graph( {
 	element: document.getElementById("chart"+args2js.uniq),
 	renderer: 'line',
 	min: ymin,
+	max: ymax,
 	height: args2js.height, 	//300,
 	width: args2js.width, 		// 800,
 	series: [ 

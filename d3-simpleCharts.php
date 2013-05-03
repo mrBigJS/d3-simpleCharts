@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.8
+Version: 1.2.9
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -29,7 +29,8 @@ License: GPL2
 	- Generating new simple chart from values + their labels
 */
 function simpleBarsDev($data) {
-	
+
+$args2js["debug"] = json_encode($data);
 // Unique ID name for each new chart +
 // Generate all CSS to WP page + receive a unique ID of graph
 $uniq = styleBars($data['css']);
@@ -62,7 +63,7 @@ $args2js["data"] = $points2; // Data set: labels & values in JSON array
 
 // All these X labels inside $data['X'] are open and available from php shortnote for user
 
-$args2js["chart"] = testDef("Columns",$data['chart']); // Asked basic chart type or its default: Columns
+$args2js["chart"] = strtolower(testDef("columns",$data['chart'])); // Asked basic chart type or its default: Columns
 $args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
 $args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
 
@@ -70,16 +71,22 @@ $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file
 $args2js['row'] = testDef('1',$data['row']); // Row of chosen data from multidimension input file
 $args2js['column'] = testDef('',$data['column']); // Column of chosen data from multidimension input file
 
-$args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis
+$args2js['sort'] = strtolower(testDef('',$data['sort'])); // Sorting of data (abc/cba)
+
+$args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis (except: line chart)
 $args2js["width"] = testDef(640,$data['width']); // Width of final chart on post or page (default: VGA)
 $args2js["height"] = testDef(480,$data['height']); // Height of final chart
 $args2js["margin"] = testDef(json_decode('{"top": 20, "right": 20, "bottom": 30, "left": 70}'),json_decode($data['margin'])); // How much space around chart for the axis titles & values
 $args2js["ticks"] = testDef(10,$data['ticks']); // If there is horizontal or vertical ticks inside columns or bars
+
 $args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linear axis of values
+$args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
+
 $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
+
 // Coloring of chart objects, linear ramp, if any defined
-$args2js['startbar'] = testDef('',$data['startbar']); // Starting color of pie chart slices
-$args2js['endbar'] = testDef('',$data['endbar']); // Starting color of pie chart slices
+$args2js['startbar'] = testDef('navy',$data['startbar']); // Starting color 1st bar/slice of chart
+$args2js['endbar'] = testDef('blue',$data['endbar']); // Ending color of smooth gradient
 
 $main = testDef("",$data['mtitle']); // Major title
 $mstyle = testDef("text-align:center",$data['mstyle']); // Title's position & style <TD>
@@ -132,7 +139,7 @@ else
 <link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.css" />
 <script src="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.min.js"></script>
 */
-// if ($data['chart'] == 'Line') {
+// if ($data['chart'] == 'line') {
 	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" />';
 	echo '<script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>';
 // }
@@ -153,7 +160,7 @@ id = '<? echo $args2js['id'] ?>';
 
 // A magical glue: dumping server's php JSON for browser's JS variable, one line
 var args2js = <?php echo json_encode($args2js) ?>;
-
+console.info(args2js);
 // Writing data set into global array (debug and look this on FireBug/Chrome console: "d3charts")
 if (typeof d3charts == 'undefined') 
 	d3charts = new Array();
@@ -163,7 +170,7 @@ d3charts.push(args2js);
 var rootp = 'wp-content/plugins/d3-simpleCharts/icons/';
 
 // All existing chart types & their names
-var ctype = ["'Columns'","'Bars'","'Area'","'Line'","'Pie'"];
+var ctype = ["'columns'","'bars'","'area'","'line'","'pie'"];
 var cicons = ["columns.png","bars.png","area.png","line.png","pie.png"];
 // Referring to just now added one for creating its buttons
 var last_chart = d3charts.length-1;
@@ -203,15 +210,16 @@ var cssfile = "'d3chart.css'";
 var rootp = 'wp-content/plugins/d3-simpleCharts/';
 var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
-var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>';
+var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO
+var sortbutt = '<select '+fontx+' id="xsort" onchange="sort()"><option value="">Sort</option><option value="abc">ABC</option><option value="cba">CBA</option></select>';
 
 // Our chart container in HTML is <table> element with custom styles
 var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle ?>" width="'+(100+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
 html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
-html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td></tr>';
-var chartX = '<div style="float:right" id="'+ chartid + '"></div>';
+html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td><td>'+sortbutt+'</td></tr>';
+var chartX = '<div style="" id="'+ chartid + '"></div>';
 if (url) // Here is row where D3 draws its chart - finally
 	html = html + '<tr><td><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
 else
@@ -297,6 +305,7 @@ function showembed(chartid) {
 
 add_shortcode("drawColumns", "simpleBarsDev");
 add_shortcode("simpleCharts", "simpleBarsDev");
+add_shortcode("simpleChart", "simpleBarsDev");
 add_shortcode("simpleChartsNew", "simpleBarsDev");
 
 // All minor PHP functions
@@ -357,8 +366,9 @@ return $uniq;
 */
 function getArr($array) {
 
-	$array = str_replace('(','',$array);
-	$array = str_replace(')','',$array);
+	$array = str_replace('(', '',$array);
+	$array = str_replace(')', '',$array);
+	$array = str_replace(', ', ',',$array);
 	return explode(',',$array);  // cells must be separated by ',' letter
 }
 
