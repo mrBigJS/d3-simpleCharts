@@ -4,14 +4,36 @@ html, body
 	font-family: Arial, Helvetica, sans-serif;
 	color: navy;
 }
-
 svg
 {
-	background-color:#E6E6FA; 
-	border:4px ridge navy;
+	background-color:#FFFFFF; 
+	border:2px ridge navy;
 }
 text
 {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 9px;
 }
+g
+{
+	stroke: black;
+	stroke-width: 0.9;
+	fill: darkgray;
+}
+path
+{
+}
+.svgtable
+{
+	background-color:#E6E6FA; 
+	border:4px ridge navy;
+}
+.titletext h3
+{
+	font-family: Arial, Helvetica, sans-serif;
+	text-align:center;
+	color: navy;
+	font-size: 14px;
+	text-shadow: 2px 2px darkgray;
+}
+

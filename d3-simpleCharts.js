@@ -108,11 +108,12 @@ if (args2js.datafile  && args2js.row) {
 	args2js.data = pickColumn(args2js.column, args2js.data);
 	args2js.column = 0;
 }
-	console.info(args2js.data);
+console.info(args2js.sort);
+
 	if (args2js.sort) // Sort
-		if (args2js.sort == 'abc')
+		if (args2js.sort == 'abc' || args2js.sort == 123 || args2js.sort == '123')
 			args2js.data.sort(abcSort)
-		else if (args2js.sort == 'cba')
+		else if (args2js.sort == 'cba' || args2js.sort == 321 || args2js.sort == '321')
 			args2js.data.sort(cbaSort);
 
 	if (ctype) // Global chart type can be overwritten by ctype input
@@ -900,11 +901,12 @@ function getColorRamp(startColor, steps, endColor) {
 		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simpleCharts/'+css+'" type="text/css" media="all"/> ';
 	else
 		css = '';
+	// css = '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" /><script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>' + css; // css input file of this func.call has the priority over all other styles before that
 	if (logoUrl)
 		logoUrl = '<img src="'+logoUrl+'">';
 	var printB = '<button style="float:right" onClick="window.print()">Print Chart</button> ';
 	var html = header+' <html><head><title>Chart('+args2js.chart+'): '+args2js.title+'</title>'+css+'</head> ';
-	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3>'+args2js.title+'</h3>'+svg+'<br /><br />'+printB+' </body></html> ';
+	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3 class="titletext">'+args2js.title+'</h3>'+svg+'<br /><br />'+printB+' </body></html> ';
 
 	var cwidth = 150 + parseInt(args2js.width);
 	var cheight = 200 + parseInt(args2js.height);

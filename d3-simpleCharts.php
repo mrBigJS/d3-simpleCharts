@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.10
+Version: 1.2.11
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -71,7 +71,7 @@ $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file
 $args2js['row'] = testDef('1',$data['row']); // Row of chosen data from multidimension input file
 $args2js['column'] = testDef('',$data['column']); // Column of chosen data from multidimension input file
 
-$args2js['sort'] = strtolower(testDef('',$data['sort'])); // Sorting of data (abc/cba)
+$args2js['sort'] = strtolower(testDef('',$data['sort'])); // Sorting of data values (123/321)
 
 $args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis (except: line chart)
 $args2js["width"] = testDef(640,$data['width']); // Width of final chart on post or page (default: VGA)
@@ -86,10 +86,10 @@ $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
 
 // Coloring of chart objects, linear ramp, if any defined
 $args2js['startbar'] = testDef('navy',$data['startbar']); // Starting color 1st bar/slice of chart
-$args2js['endbar'] = testDef('blue',$data['endbar']); // Ending color of smooth gradient
+$args2js['endbar'] = testDef('red',$data['endbar']); // Ending color of smooth gradient
 
 $main = testDef("",$data['mtitle']); // Major title
-$mstyle = testDef("text-align:center",$data['mstyle']); // Title's position & style <TD>
+$mstyle = testDef("",$data['mstyle']); // Title's position & style <TD>
 $logo = testDef("",$data['logo']); // Possible url of logo (eq company symbol, etc)
 
 if (strlen($logo))
@@ -101,7 +101,7 @@ if ($logopos == "top") {
 }
 
 $moredata = testDef(" More Data ",$data['moredata']); // Title's position & style <TD>
-$backstyle = testDef('background-color:#E6E6FA; border:4px ridge navy;',$data['backstyle']); // Chart's border & background style
+$backstyle = testDef('',$data['backstyle']); // Chart's border & background style 
 $url = testDef('',$data['url']); // Url to further info on net
 
 if ($url)  // URL to external page linked to chart
@@ -144,6 +144,7 @@ else
 	echo '<script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>';
 // }
 ?>
+<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/d3chart.css" />
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
 
 <script>
@@ -205,19 +206,20 @@ elink = '';
 // new window popup's opening
 var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 	logofile = "'"+logofile+"'";
-var cssfile = "'d3chart.css'"; 
+var cssfile = "'d3chart.css'";
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
 var rootp = 'wp-content/plugins/d3-simpleCharts/';
+console.info(logofile);
 var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO
-var sortbutt = '<select '+fontx+' id="xsort" onchange="sort()"><option value="">Sort</option><option value="abc">ABC</option><option value="cba">CBA</option></select>';
+var sortbutt = '<select '+fontx+' id="xsort" onchange="sort()"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
 
 // Our chart container in HTML is <table> element with custom styles
-var html = '<br /><br /><table id= "'+ tableid +'" style="<?php echo $backstyle ?>" width="'+(100+parseInt(args2js.width))+'">';
+var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php echo $backstyle ?>" width="'+(100+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
-html = html + '<tr><td style="<?php echo $mstyle ?>">'+butts+'<br /> <b><?php echo $main ?></b><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
+html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>">'+butts+'<br /> <h3><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
 html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td><td>'+sortbutt+'</td></tr>';
 var chartX = '<div style="" id="'+ chartid + '"></div>';
 if (url) // Here is row where D3 draws its chart - finally
@@ -302,10 +304,17 @@ function showembed(chartid) {
 </script>
 <?php
 };
+add_shortcode("simpleCharts", "simpleBarsDev");
+add_shortcode("SimpleCharts", "simpleBarsDev");
+add_shortcode("simplecharts", "simpleBarsDev");
+add_shortcode("Simplecharts", "simpleBarsDev");
+
+add_shortcode("simpleChart", "simpleBarsDev");
+add_shortcode("SimpleChart", "simpleBarsDev");
+add_shortcode("simplechart", "simpleBarsDev");
+add_shortcode("Simplechart", "simpleBarsDev");
 
 add_shortcode("drawColumns", "simpleBarsDev");
-add_shortcode("simpleCharts", "simpleBarsDev");
-add_shortcode("simpleChart", "simpleBarsDev");
 add_shortcode("simpleChartsNew", "simpleBarsDev");
 
 // All minor PHP functions
