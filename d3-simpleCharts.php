@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.12
+Version: 1.2.13
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -161,7 +161,7 @@ id = '<? echo $args2js['id'] ?>';
 
 // A magical glue: dumping server's php JSON for browser's JS variable, one line
 var args2js = <?php echo json_encode($args2js) ?>;
-console.info(args2js);
+// console.info(args2js);
 // Writing data set into global array (debug and look this on FireBug/Chrome console: "d3charts")
 if (typeof d3charts == 'undefined') 
 	d3charts = new Array();
@@ -195,7 +195,8 @@ if (<?php echo $series ?>==1) {  // No buttons: more data
 // Embed link element
 var cid = 'chart<? echo $uniq ?>';
 var url2 = 'wp-content/plugins/d3-simpleCharts/embed.php';  // encodeURIComponent(el.innerText)
-var cid2 = "'"+cid+"'";
+// var cid2 = "'"+cid+"'";
+var cid2 = "'<? echo $uniq ?>'"; 
 
 // embed link, TODO
 // var elink = '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>';
@@ -209,7 +210,7 @@ var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 var cssfile = "'d3chart.css'";
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
 var rootp = 'wp-content/plugins/d3-simpleCharts/';
-console.info(logofile);
+// console.info(logofile);
 var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO

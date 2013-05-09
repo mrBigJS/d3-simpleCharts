@@ -619,8 +619,9 @@ var svg = d3.select('#chart'+args2js.uniq).append("svg")
     .attr("height", 2 * radius)
   .append("g")
     // .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    .attr("class", chartid)
 	.attr("transform", "translate(" + radius + "," + radius + ")");
-
+	
 var data = datas;
 
  data.forEach(function(d) {
@@ -896,20 +897,49 @@ function getColorRamp(startColor, steps, endColor) {
   function svgWin( svgid, logoUrl, css, args2js ) {
 
 	var header = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> ';
-	var svg = $('#'+svgid).html();
+	// var svg = '<svg height="100%" width="100%">' + $('.'+svgid).html() + '</svg>';
+	var svg = $('#chart'+svgid).html();
+	// Include files
+	var jquery = "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>";
 	if (css)
 		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simpleCharts/'+css+'" type="text/css" media="all"/> ';
 	else
 		css = '';
-	// css = '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" /><script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>' + css; // css input file of this func.call has the priority over all other styles before that
+	css = '<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>' + jquery + css;
+
 	if (logoUrl)
 		logoUrl = '<img src="'+logoUrl+'">';
+
+	var smallerB = '<button style="font-size:xx-small" onClick="svgsize('+svgid+',-0.1)"> « </button> ';
+	var biggerB = '<button style="font-size:xx-small" onClick="svgsize('+svgid+',+0.1)"> » </button> ';
 	var printB = '<button style="float:right" onClick="window.print()">Print Chart</button> ';
+
 	var html = header+' <html><head><title>Chart('+args2js.chart+'): '+args2js.title+'</title>'+css+'</head> ';
-	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3 class="titletext">'+args2js.title+'</h3>'+svg+'<br /><br />'+printB+' </body></html> ';
+	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3 class="titletext">'+args2js.title+'</h3>';
+	html = html + '<table><tr><td>';
+	html = html + '<p style="float:right">' + smallerB + biggerB + '</p>';
+	html = html + '</td></tr><tr><td>';
+	html = html + svg+'<br /><br />'+printB+' </body></html> ';
+	html = html + '</td></tr></table>';
 
 	var cwidth = 150 + parseInt(args2js.width);
 	var cheight = 200 + parseInt(args2js.height);
 	myWindow=window.open('','','width='+cwidth+',height='+cheight);
 	myWindow.document.writeln(html);
    }
+   
+function svgsize(svgid, sizer) {
+
+	console.info(svgid);
+	var svgH = parseInt($('svg').attr('height'));
+	var svgW = parseInt($('svg').attr('width'));
+	$('svg').attr('height',svgH + Math.round(svgH*sizer));
+	$('svg').attr('width',svgW + Math.round(svgW*sizer));
+	console.info(svgW);
+
+	var svgG = '.g'+svgid; // Group of svg objects
+	var oldT = $(svgG).attr('transform');
+	// Magic of resizing svg chart happens:
+	sizer = 1+sizer;
+	$(svgG).attr('transform', oldT+' scale('+ sizer +') ');
+}

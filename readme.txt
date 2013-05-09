@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.12
+Stable tag: 1.2.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -174,8 +174,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 1. Shows how 'Columns' looks out together with home's pets example.
 2. Shows how 'Area' looks out together with home's pets example.
 3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
+4. New button icons to call 5 different supported chart types.
 
 == Changelog ==
+
+= 1.2.13 =
+Version 1.2.13 - Popup window chart becomes resizeable: brand-new scale down + up buttons (after all that is what 'SVG' stands for). Adding one more pretty screenshot.
 
 = 1.2.12 =
 Version 1.2.12 - Better uniform access to default styles from CSS file.
