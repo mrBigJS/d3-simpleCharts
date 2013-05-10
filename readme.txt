@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.13
+Stable tag: 1.2.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,10 +171,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 			
 == Screenshots ==
 
-1. Shows how 'Columns' looks out together with home's pets example.
-2. Shows how 'Area' looks out together with home's pets example.
-3. More complex 'Pie' chart: its segments are colored smoothly from 'navy' to 'gold' + more custom titles present.
-4. New button icons to call 5 different supported chart types.
+1. Shows how 'Columns' looks out together with home's pets example (old UI).
+2. Shows how 'Area' looks out together with home's pets example (old UI).
+3. New button icons to call 5 different supported chart types on 'Columns' (current new UI).
+4. Complex 'Pie' chart: its slices are colored smoothly from HTML 'navy' to 'gold' + more custom titles present in graph (old UI).
+5. 100% supported 'Line' chart that is produced by Rickshaw's high-level library (new UI).
+6. Just resized SVG chart on its own popup window and ready to print on paper.
 
 == Changelog ==
 

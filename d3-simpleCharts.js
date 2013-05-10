@@ -923,23 +923,28 @@ function getColorRamp(startColor, steps, endColor) {
 	html = html + '</td></tr></table>';
 
 	var cwidth = 150 + parseInt(args2js.width);
-	var cheight = 200 + parseInt(args2js.height);
-	myWindow=window.open('','','width='+cwidth+',height='+cheight);
+	var cheight = 250 + parseInt(args2js.height);
+	myWindow=window.open('','','location=0,status=0,menubar=0,width='+cwidth+',height='+cheight);
 	myWindow.document.writeln(html);
    }
    
 function svgsize(svgid, sizer) {
 
-	console.info(svgid);
+	// console.info(svgid);
 	var svgH = parseInt($('svg').attr('height'));
 	var svgW = parseInt($('svg').attr('width'));
 	$('svg').attr('height',svgH + Math.round(svgH*sizer));
 	$('svg').attr('width',svgW + Math.round(svgW*sizer));
-	console.info(svgW);
+	// console.info(svgW);
 
 	var svgG = '.g'+svgid; // Group of svg objects
 	var oldT = $(svgG).attr('transform');
 	// Magic of resizing svg chart happens:
 	sizer = 1+sizer;
 	$(svgG).attr('transform', oldT+' scale('+ sizer +') ');
+	// Scaling window size around the chart
+	var w=parseInt(window.innerWidth);
+	var h=parseInt(window.innerHeight);
+	window.innerWidth = Math.round(w*sizer);
+	window.innerHeight = Math.round(h*sizer);
 }
