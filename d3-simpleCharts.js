@@ -538,12 +538,41 @@ d3.tsv("data2.tsv", function(error, data) {
     d.value = +d.value;
 	console.info(d);
   });
-*/  
+*/
+// Linear gradient coloring of path's area: from left to right from start- to endbar
+if (args2js.startbar || args2js.endbar) {
+
+var startcol = "navy";
+if (args2js.startbar)
+	startcol = args2js.startbar;
+var endcol = "blue";
+if (args2js.endbar)
+	endcol = args2js.endbar;
+
+var gradid = 'pgrad'+args2js.uniq;
+
+   svg.append("defs")
+  	.append("linearGradient")
+	.attr("id", gradid)
+	.attr("x1", "0%")
+	.attr("y1", "0%")
+	.attr("x2", "100%")
+	.attr("y2", "0%")
+	.append("stop")
+		.attr("offset", "0%")
+		.attr("style", "stop-opacity:1; stop-color:"+startcol);
+	
+var	lg = d3.select('#'+gradid);
+	lg.append("stop")
+		.attr("offset", "100%")
+		.attr("style", "stop-opacity:1; stop-color:"+endcol);
+}
   svg.append("path")
       .datum(data)
-      .attr("class", "bar")
+      .attr("class", "areabar")
 	  .attr("transform", "translate(" + width/data.length/2 + ", 0 )")
-      .attr("d", area);  // line
+      .attr("d", area)
+  	  .attr("fill", "url(#"+gradid+")");
 
 /* TODO HERE: uncomment and fix the labels of x-axis coming out ok.
 */
@@ -927,22 +956,26 @@ function getColorRamp(startColor, steps, endColor) {
 	myWindow=window.open('','','location=0,status=0,menubar=0,width='+cwidth+',height='+cheight);
 	myWindow.document.writeln(html);
    }
-   
+
+// Resizing of a chart on its popup window
 function svgsize(svgid, sizer) {
 
-	// console.info(svgid);
+	// Old existing whole canvas of chart
 	var svgH = parseInt($('svg').attr('height'));
 	var svgW = parseInt($('svg').attr('width'));
+	// Resize of it
 	$('svg').attr('height',svgH + Math.round(svgH*sizer));
 	$('svg').attr('width',svgW + Math.round(svgW*sizer));
 	// console.info(svgW);
 
+	// Resize of chart itself
 	var svgG = '.g'+svgid; // Group of svg objects
 	var oldT = $(svgG).attr('transform');
-	// Magic of resizing svg chart happens:
+	// Magic of resizing svg chart
 	sizer = 1+sizer;
 	$(svgG).attr('transform', oldT+' scale('+ sizer +') ');
-	// Scaling window size around the chart
+
+	// Scaling window size around a chart
 	var w=parseInt(window.innerWidth);
 	var h=parseInt(window.innerHeight);
 	window.innerWidth = Math.round(w*sizer);

@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.14
+Stable tag: 1.2.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,14 +171,24 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 			
 == Screenshots ==
 
-1. Shows how 'Columns' looks out together with home's pets example (old UI).
-2. Shows how 'Area' looks out together with home's pets example (old UI).
-3. New button icons to call 5 different supported chart types on 'Columns' (current new UI).
+1. Shows how basic 'Columns' looks out together with home's pets example (old UI).
+2. Shows how basic 'Area' looks out together with home's pets example (old UI).
+3. New button icons to call 5 different supported chart types on 'Columns' (current new UI with icons).
 4. Complex 'Pie' chart: its slices are colored smoothly from HTML 'navy' to 'gold' + more custom titles present in graph (old UI).
 5. 100% supported 'Line' chart that is produced by Rickshaw's high-level library (new UI).
 6. Just resized SVG chart on its own popup window and ready to print on paper.
+7. Area chart showing nice smooth gradient colors (new UI + options: startbar="lime" & endbar="red"]).
 
 == Changelog ==
+
+= 1.2.16 =
+Version 1.2.16 - Linear gradient colors comes to 'Area' charts same way as on 'Columns' + its screenshot. New 'cssfile' option to input any named style file per chart. New reference page of CSS classes on Wiki + general clarifications of docs on Github.
+
+= 1.2.15 =
+Version 1.2.15 - Fixing bug of resizing chart on its popup window.
+
+= 1.2.14 =
+Version 1.2.14 - Adding afew more impressive screenshots.
 
 = 1.2.13 =
 Version 1.2.13 - Popup window chart becomes resizeable: brand-new scale down + up buttons (after all that is what 'SVG' stands for). Adding one more pretty screenshot.

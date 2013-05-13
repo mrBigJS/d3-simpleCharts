@@ -3,13 +3,13 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.14
+Version: 1.2.16
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
 License: GPL2
 */
-/*
+/* 
 	d3 - Charts
 	-----------
 
@@ -30,9 +30,15 @@ License: GPL2
 */
 function simpleBarsDev($data) {
 
-$args2js["debug"] = json_encode($data);
+$args2js["debug"] = ''; 
+
+// External CSS style file name
+$cssfile = testDef("d3chart.css",$data['cssfile']);
+if ($cssfile)
+	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/'. $cssfile .'" />';
+
 // Unique ID name for each new chart +
-// Generate all CSS to WP page + receive a unique ID of graph
+// generate all custom tailored CSS to independent graph
 $uniq = styleBars($data['css']);
 // $chartid = "chart" . $uniq;
 
@@ -85,8 +91,8 @@ $args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
 $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
 
 // Coloring of chart objects, linear ramp, if any defined
-$args2js['startbar'] = testDef('navy',$data['startbar']); // Starting color 1st bar/slice of chart
-$args2js['endbar'] = testDef('red',$data['endbar']); // Ending color of smooth gradient
+$args2js['startbar'] = testDef('',$data['startbar']); // Starting color 1st bar/slice of chart
+$args2js['endbar'] = testDef('',$data['endbar']); // Ending color of smooth gradient
 
 $main = testDef("",$data['mtitle']); // Major title
 $mstyle = testDef("",$data['mstyle']); // Title's position & style <TD>
@@ -128,7 +134,7 @@ $jquery = testDef(0,$data['jquery']); // If jQuery should be loaded (eq not exis
 if ($jquery)
 	echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
 
-// Including minimized version of d3.js
+// Including minimized version of d3.js: from CDN or local copy of server
 if ($cdn)
 	echo '<script src="http://d3js.org/d3.v3.min.js"></script>';
 else
@@ -143,8 +149,9 @@ else
 	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" />';
 	echo '<script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>';
 // }
+
+// <link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/d3chart.css" />
 ?>
-<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/d3chart.css" />
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
 
 <script>
@@ -207,7 +214,9 @@ elink = '';
 // new window popup's opening
 var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 	logofile = "'"+logofile+"'";
-var cssfile = "'d3chart.css'";
+// style file name for popup charts - too
+var cssfile = "'<?php echo $cssfile ?>'";
+
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
 var rootp = 'wp-content/plugins/d3-simpleCharts/';
 // console.info(logofile);
