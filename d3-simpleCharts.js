@@ -120,12 +120,16 @@ console.info(args2js.sort);
 		args2js.chart = ctype;
 
 	// Attach interpolated color ramp to chart's bars/columns/etc, if asked
-	args2js.colors = getColorRamp(args2js.startbar, args2js.data.length, args2js.endbar);
+	if (args2js.startbar && args2js.endbar)
+		args2js.colors = getColorRamp(args2js.startbar, args2js.data.length, args2js.endbar);
 	// console.info(args2js);
 
 	// Emptying this chart's space
 	$('#chart'+args2js.uniq).empty();
 
+	if (!args2js.margin)  // In case this is called from JS directly
+		args2js.margin = new Object({"top": 20, "right": 20, "bottom": 30, "left": 70});
+		
 	var data = args2js.data;  // Taking data out & more compatible for charting modules below
 	if (args2js.chart == 'columns')
 		simpleCols(data,args2js)
@@ -194,19 +198,24 @@ function sort() {
 function simpleCols(data,args2js) {
 // console.info(args2js);
 
+console.info(data);
+console.info(args2js);
+
 // Size of output chart + margins
 var width = args2js.width;
 var height = args2js.height;
 
 if (!args2js.margin) {
- width = args2js.width - args2js.margin.left - args2js.margin.right;
- height = args2js.height - args2js.margin.top - args2js.margin.bottom;
+	width = args2js.width - args2js.margin.left - args2js.margin.right;
+	height = args2js.height - args2js.margin.top - args2js.margin.bottom;
 }
 // console.info(width);
 // console.info(height);
 
 // Formatting of numbers on axis
- formatPercent = d3.format(args2js.format);
+// if (args2js.format)
+var formatPercent = d3.format(args2js.format);
+
 // console.info(args2js.format);
  
 // X and Y axels: labels & their ranges
@@ -216,6 +225,7 @@ var x = d3.scale.ordinal()
 var min_y = 0;
 if (args2js['minrange'])
 	min_y = args2js['minrange'];
+
 var y = d3.scale.linear()
     .range([height, min_y]);
 
@@ -247,11 +257,16 @@ var yAxis = d3.svg.axis()
   data.forEach(function(d) {
 	d.value = +d.value;
   });
-console.info(data);
-// Range of X & Y axis
+// console.info(data);
+
+var max_y = d3.max(data, function(d) { return d.value; });
+if (args2js['maxrange'])
+	max_y = args2js['maxrange'];
+
+// Range of X & Y axis mapped
   x.domain(data.map(function(d) { return d.label; }));
-  y.domain([min_y, d3.max(data, function(d) { return d.value; })]);
-  
+  y.domain([min_y, max_y]);
+
 // Setting up X axis + its title
   svg.append("g")
       .attr("class", "x axis")
@@ -287,8 +302,12 @@ console.info(data);
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.value); })
 	  // .text(function(d) { return d; })
-	  .style("fill", function(d, i) { return args2js.colors[i]; }) 
+//	  .style("fill", function(d, i) { return args2js.colors[i]; }) 
       .attr("height", function(d) { return height - y(d.value); });
+
+if (args2js.colors)
+  svg.selectAll(".bar")
+	.style("fill", function(d, i) { return args2js.colors[i]; });
 
 // console.info(args2js.ticks);
 
@@ -399,9 +418,13 @@ svg.selectAll(".bar")
     .attr("x", function(d) { return x(Math.min(min, d)); })
     .attr("y", function(d, i) { return y(i); })
     .attr("width", function(d) { return Math.abs(x(d) - x(min)); })
-	.style("fill", function(d, i) { return args2js.colors[i]; })
+//	.style("fill", function(d, i) { return args2js.colors[i]; })
     .attr("height", y.rangeBand()+6);
  
+ if (args2js.colors)
+  svg.selectAll(".bar")
+ 	.style("fill", function(d, i) { return args2js.colors[i]; });
+	
 // Range of X & Y axis
   y.domain(datas.map(function(d) { return d.label; }));
   // x.domain([min, d3.max(datas, function(d) { return d.value; })]);

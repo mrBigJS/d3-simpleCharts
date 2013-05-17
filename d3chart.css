@@ -1,32 +1,12 @@
-html, body
-{
-	font-style:normal;
-	font-family: Arial, Helvetica, sans-serif;
-	color: navy;
-}
-svg
-{
-	background-color:#FFFFFF; 
-	border:2px ridge navy;
-}
-text
-{
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 9px;
-}
-g
-{
-	stroke: black;
-	stroke-width: 0.9;
-	fill: darkgray;
-}
-path
-{
-}
 .svgtable
 {
 	background-color:#E6E6FA; 
 	border:4px ridge navy;
+	margin:10px;
+}
+.svgchart
+{
+	padding:10px;
 }
 .titletext h3
 {
@@ -36,4 +16,68 @@ path
 	font-size: 14px;
 	text-shadow: 2px 2px darkgray;
 }
-
+.bar
+{
+	fill:navy;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	stroke-width: 0.9;
+	stroke: black;
+}
+.areabar
+{
+	stroke-width: 0.9;
+	stroke: black;
+}
+.chart
+{
+	stroke: gray;
+	stroke-width: 0.2;
+}
+.axis
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: blue;
+}
+.x
+{
+}
+.y
+{
+}
+.tick
+{
+}
+.major
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: black;
+	fill: black;
+	margin: 2px;
+}
+.domain
+{
+}
+svg
+{
+	background-color:#FFFFFF;
+	padding:4px;
+	border:2px ridge navy;
+}
+text
+{
+}
+g
+{
+}
+rect
+{
+}
+path
+{
+}
+line
+{
+}

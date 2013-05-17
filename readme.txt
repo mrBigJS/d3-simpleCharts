@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: Jouni Santara, TERE-tech ltd
 Donate link: http://www.tere-tech.eu/
-Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM
+Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.16
+Stable tag: 1.2.18
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -180,6 +180,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 7. Area chart showing nice smooth gradient colors (new UI + options: startbar="lime" & endbar="red"]).
 
 == Changelog ==
+
+= 1.2.18 =
+Version 1.2.18 - Bug fixes: 'Columns' supports now maxrange option too + sanity checks of generating gradiant colors for a chart at all.
+
+= 1.2.17 =
+Version 1.2.17 - New chart's CSS class 'svgchart' + its docs on Wiki. Default styling file: move of styling rules toward chart's own classes from basic SVG elements + listed names of mostly generated classes by new chart(s). More roomy & clear layout of default styled charts overall.
 
 = 1.2.16 =
 Version 1.2.16 - Linear gradient colors comes to 'Area' charts same way as on 'Columns' + its screenshot. New 'cssfile' option to input any named style file per chart. New reference page of CSS classes on Wiki + general clarifications of docs on Github.
