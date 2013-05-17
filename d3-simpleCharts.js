@@ -83,6 +83,52 @@ function cbaSort(a,b) { // custom sort by values of data (desc.)
 function abcSort(a,b) { // custom sort (asc.)
 	return a.value > b.value;
 }
+// TODO ...
+function showembed(chartid) {
+
+	var node = $('#'+chartid).html();
+	console.info(node);
+	// console.info(encodeURIComponent(node));
+	// return encodeURIComponent(node);
+	// '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>'
+}
+
+/*
+	newChart
+	--------
+	Deciding where data comes from and drawing it out.
+*/
+function newChart(args2js,datafile) {
+
+	if (args2js.data.length == 0) {
+
+	if (!datafile) { // Input must exists
+		console.error('Not found data input for chart from file or php direct call !');
+		return;
+	}
+	// This is how d3.js wants to read external files: AJAX calls + GETs, not pretty but works
+	if (datafile.indexOf('.tsv') > 0)
+	d3.tsv(datafile, function(error, data) {
+		args2js.data = data;
+	});
+	if (datafile.indexOf('.csv') > 0)
+	d3.csv(datafile, function(error, data) { 
+		args2js.data = data;
+	});
+	if (datafile.indexOf('.json') > 0)
+	d3.json(datafile, function(error, data) {
+		args2js.data = data;
+	});
+	if (datafile.indexOf('.xml') > 0)
+	d3.xml(datafile, function(error, data) {
+		return;  // NOT working yet: TODO NEXT ...
+		args2js.data = data;
+	});
+}
+// Data in - draw it out
+drawChart(args2js);
+}
+
 /*
 	drawChart
 	---------
@@ -108,7 +154,7 @@ if (args2js.datafile  && args2js.row) {
 	args2js.data = pickColumn(args2js.column, args2js.data);
 	args2js.column = 0;
 }
-console.info(args2js.sort);
+// console.info(args2js.sort);
 
 	if (args2js.sort) // Sort
 		if (args2js.sort == 'abc' || args2js.sort == 123 || args2js.sort == '123')
@@ -129,8 +175,11 @@ console.info(args2js.sort);
 
 	if (!args2js.margin)  // In case this is called from JS directly
 		args2js.margin = new Object({"top": 20, "right": 20, "bottom": 30, "left": 70});
-		
-	var data = args2js.data;  // Taking data out & more compatible for charting modules below
+
+	if (!args2js.tooltips) // Tooltips active?
+		createTooltip();
+
+	var data = args2js.data;  // Taking data out for chart rendering modules
 	if (args2js.chart == 'columns')
 		simpleCols(data,args2js)
 	else if (args2js.chart == 'bars')
@@ -143,6 +192,7 @@ console.info(args2js.sort);
 		line(data,args2js)
 	else
 		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
+
 }
 /*
 	extendData
@@ -182,6 +232,11 @@ function sort() {
 	drawChart(d3charts[0],args2js.chart);
 }
 
+var tooltip;
+var defaultOpacity = 0.8;
+var dateFormat = d3.time.format("%d-%b-%Y");
+var numberFormat = d3.format("n");
+
 /*
 	simpleCols
 	----------
@@ -198,8 +253,8 @@ function sort() {
 function simpleCols(data,args2js) {
 // console.info(args2js);
 
-console.info(data);
-console.info(args2js);
+// console.info(data);
+// console.info(args2js);
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -312,6 +367,16 @@ if (args2js.colors)
 // console.info(args2js.ticks);
 
 	checkTicks(args2js,height,width,y,'horizontal'); // whether ticks should be draw or not on graph
+
+	if (!args2js.tooltips) // Tooltips active?
+		addTooltips();
+}
+
+function addTooltips() {
+	d3.selectAll(".bar")	
+		.on("mouseover", showTooltip)
+		.on("mousemove", moveTooltip)
+		.on("mouseout", hideTooltip);
 }
 
 /*
@@ -458,6 +523,9 @@ svg.append("g")
       .text(args2js.xtitle); 
 
 	checkTicks(args2js,height,width,x,'vertical'); // whether ticks should be draw or not on graph
+
+	if (!args2js.tooltips) // Tooltips active?
+		addTooltips();
 }
 
 /*
@@ -700,6 +768,8 @@ var color = d3.scale.ordinal()
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.label });
 // });
+	if (!args2js.tooltips) // Tooltips active?
+		addTooltips();
 }
 
 function checkTicks(args2js,height,width,xy,xtype) {
@@ -1004,3 +1074,88 @@ function svgsize(svgid, sizer) {
 	window.innerWidth = Math.round(w*sizer);
 	window.innerHeight = Math.round(h*sizer);
 }
+
+// Tooltip's support functions
+
+function createTooltip() {
+	if(tooltip == null) {
+		tooltip = d3.select("body").append("div")
+    		.attr("class", "iputooltip")
+        	.style("opacity", 0.0)
+        	.style("width", function() {return screen.width > 320 ? "60px" : "60px"; })
+    		.html("<p>tooltip</p>")
+    		.on("touchstart", hideTooltip);
+	}
+	return tooltip;
+}
+
+function showTooltip(d) {
+	d3.selectAll(".bar").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+
+	d3.selectAll(".areabar").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+		
+    d3.selectAll(".arc").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+
+	d3.select(this).transition()
+		.duration(100)
+		.delay(50)
+		.style("opacity", 1.0);
+ 
+	tooltip.html(function() {
+			if (typeof d.label == 'undefined')
+				d.label = '';
+			var str = "<p><b>" + d.label + '</b><br />' + d.value + "</p>"; // class='ISO-3166-1'
+			return str;
+	});
+
+	tooltip
+  		.style("left", (d3.event.pageX - 70) + "px")     
+        .style("top", (d3.event.pageY) + "px")
+        .transition()
+  			.duration(500)
+            .style("opacity", 0.7);
+    
+    d3.event.stopPropagation();
+    d3.event.preventDefault();
+};
+
+function moveTooltip(d) {
+	tooltip
+		.style("left", (d3.event.pageX - 70) + "px")     
+		.style("top", (d3.event.pageY) + "px"); 
+		
+    d3.event.stopPropagation();
+    d3.event.preventDefault();
+};
+
+function hideTooltip(d) { 
+
+	d3.selectAll(".bar").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+
+	d3.selectAll(".areabar").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+		
+    d3.selectAll(".arc").transition()
+       	.duration(100)
+       	.style("opacity", defaultOpacity);
+
+	tooltip.transition()
+		.duration(100)
+		.style("opacity", 0.0);
+    
+    d3.event.stopPropagation();
+    d3.event.preventDefault();
+};
+
+function isNumber(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+};

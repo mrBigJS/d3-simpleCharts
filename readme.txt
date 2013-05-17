@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.18
+Stable tag: 1.2.19
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -180,6 +180,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 7. Area chart showing nice smooth gradient colors (new UI + options: startbar="lime" & endbar="red"]).
 
 == Changelog ==
+
+= 1.2.19 =
+Version 1.2.19
+* Tooltips support (COOL & transparent !) and shortcode's 'notooltips' new option.
+* New optional 'chartid' allowing the placement of chart anywhere.
+* Legal license text included, also.
 
 = 1.2.18 =
 Version 1.2.18 - Bug fixes: 'Columns' supports now maxrange option too + sanity checks of generating gradiant colors for a chart at all.
