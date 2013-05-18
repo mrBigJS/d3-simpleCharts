@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.19
+Version: 1.2.20
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -30,7 +30,7 @@ License: GPL2
 */
 function simpleBarsDev($data) {
 
-// $data["debug"] = $data["chartid"]; 
+$args2js["debug"] = ''; 
 
 // External CSS style file name
 $cssfile = testDef("d3chart.css",$data['cssfile']);
@@ -40,6 +40,7 @@ if ($cssfile)
 // Unique ID name for each new chart +
 // generate all custom tailored CSS to independent graph
 $uniq = styleBars($data);
+// $chartid = "chart" . $uniq;
 
 // Testing ALL user's given arguments from php side + setting defauls
 
@@ -61,19 +62,20 @@ foreach(array_keys($labels) as $i) {
 // echo json_encode($points2);
 // var_dump(json_decode($points));
 
-// All other arguments from php shortcode call -> php array
+// All other - optional - arguments from php shortcode call to php args array
 $args2js = array();
 
+// All these 'X' labels inside $data['X'] are available from shortcode
+
 $args2js["uniq"] = $uniq; // Unique ID of this new chart
-$args2js["chartid"] = $data['chartid']; // user's own container ID
+$args2js["chartid"] = $data["chartid"]; // user's own container ID 
 
 $args2js["data"] = $points2; // Data set: labels & values in JSON array
 
-// All these X labels inside $data['X'] are open and available from php shortnote for user
-
 $args2js["chart"] = strtolower(testDef("columns",$data['chart'])); // Asked basic chart type or its default: Columns
-$args2js["xtitle"] = testDef("X-values",$data['xtitle']); // Minor title
-$args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor title
+
+$args2js["xtitle"] = testDef("X-labels",$data['xtitle']); // Minor x-title
+$args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor y-title
 
 $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file for data set
 $args2js['row'] = testDef('1',$data['row']); // Row of chosen data from multidimension input file
@@ -91,16 +93,14 @@ $args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linea
 $args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
 
 $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
-$main = $args2js['title'];
+$main = $args2js['title']; // Major title
 
-// Coloring of chart objects: linear gradient colors
+// Coloring of chart objects, linear gradient color ends
 $args2js['startbar'] = testDef('',$data['startbar']); // Starting color 1st bar/slice of chart
 $args2js['endbar'] = testDef('',$data['endbar']); // Ending color of smooth gradient
 
 $mstyle = testDef("",$data['mstyle']); // Title's position & style <TD>
 $logo = testDef("",$data['logo']); // Possible url of logo (eq company symbol, etc)
-
-$args2js['tooltips'] = testDef(1,$data['tooltips']); // Tooltips: active / not
 
 if (strlen($logo))
 	$logo = ' <img src="' . $logo . '"> ';
@@ -109,6 +109,8 @@ if ($logopos == "top") {
 	$logo_top = $logo;
 	$logo = '';
 }
+
+$args2js['tooltips'] = testDef(0,$data['notooltips']); // Tooltips: active / not 
 
 $moredata = testDef(" More Data ",$data['moredata']); // Title's position & style <TD>
 $backstyle = testDef('',$data['backstyle']); // Chart's border & background style 
@@ -160,22 +162,20 @@ else
 
 <script>
 
+// First things at first: generate the HTML -container for its new chart
 var url = '<? echo $url ?>';
 var chartid = 'chart<? echo $uniq ?>';
 var tableid = 'table<? echo $uniq ?>';
 var title = '<? echo $title ?>';
 var url = '<? echo $url ?>';
-var id = '<? echo $args2js['id'] ?>';
-var datafile = "<?php echo $args2js["datafile"] ?>";
 
-// Moving to browser's JavaScript now ...
+// Moving to browsers's JS now ...
 
-// A magical glue: dumping server's php JSON for browser's JavaScript variable
-// ###############################################
+// A magical glue: dumping server's php JSON for browser's JS variable, one line
 var args2js = <?php echo json_encode($args2js) ?>;
-// ###############################################
+// console.info(args2js);
 
-// Writing data set into global array (debug and look this on FireBug/Chrome console: "d3charts")
+// Writing separate data sets into its global array
 if (typeof d3charts == 'undefined') 
 	d3charts = new Array();
 // d3charts[args2js.title] = args2js;
@@ -196,7 +196,7 @@ butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[4]+')"> <img src="'+rootp+cicons[4]+'"> </button></span>';
 
-var otherbutt = ' <button '+fontx+' onclick="extendData()" title="Extend to other data sets."><?php echo $moredata ?></button>';
+var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
 if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher 
 		butts = '';
@@ -229,10 +229,10 @@ var rootp = 'wp-content/plugins/d3-simpleCharts/';
 var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO
-var sortbutt = '<select '+fontx+' id="xsort" onchange="sort()"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
+var sortbutt = '<select '+fontx+' id="xsort" onchange="sort('+last_chart+')"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
 
-// Our chart container in HTML is <table> element
-var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php echo $backstyle ?>" width="'+(100+parseInt(args2js.width))+'">';
+// Our chart container in HTML is <table> element with custom styles
+var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php echo $backstyle ?>" width="'+(150+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
 html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>">'+butts+'<br /> <h3><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
@@ -267,19 +267,33 @@ if (<?php echo $exportsvg ?>==1) {
 
 html = html + '<tr><td id="'+ chartid + 'odata" ' + title + ' style=" float:right;">'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
+/* OLD
+document.write(html); // This prints out chart (now at top of each WP page/post)
+newChart(d3charts[last_chart]);
+*/
+d3charts[d3charts.length-1].html = html;
 
-if (args2js.chartid) // where we locate our chart on WP page (needs JQuery, sorry...)
-	$(document).ready(function() { // need to wait whole DOM ready ...
-		$('#'+args2js.chartid).append(html);
-		newChart(args2js,datafile);
+if (d3charts[last_chart].chartid) { // chart has its container by user's input (needs JQuery, sorry)
+
+// Tracking instance of active chart
+// var lastOne = d3charts.length-1;
+if (typeof chartQ == 'undefined') 
+	var chartQ = new Array();
+	chartQ.push(last_chart);
+
+// console.info(chartQ);
+	$(document).ready(function() { // need to wait whole DOM loaded up
+		var i = chartQ.shift();
+		$('#'+d3charts[i].chartid).append(d3charts[i].html);
+		// console.info(i);
+		// console.info(chartQ);
+		newChart(d3charts[i]);
 	});
-else {
+} else { // This prints chart container at top of each WP page/post
 	document.write(html); // This prints chart container at top of each WP page/post
-	newChart(args2js,datafile);
+	newChart(d3charts[last_chart]);
 }
 
-// Printing all data for input next - debug 
-// var datas = <?php echo $points ?>; 
 </script>
 <?php
 };
@@ -321,7 +335,10 @@ $cssdata = $data['css'];
 $uniq = rand();
 if ($data['chartid'])
 	$uniq = $data['chartid'];
-
+/* TODO: make it similar as <div ID="...">
+if ($data['id'])
+	$uniq = $data['id'];
+*/
 // Parsing css data from json object => string
 $cssdata = (array) json_decode($cssdata);
 // var_dump($cssdata);

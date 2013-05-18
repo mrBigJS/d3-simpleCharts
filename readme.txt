@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.19
+Stable tag: 1.2.20
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,15 +171,19 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 			
 == Screenshots ==
 
-1. Shows how basic 'Columns' looks out together with home's pets example (old UI).
-2. Shows how basic 'Area' looks out together with home's pets example (old UI).
-3. New button icons to call 5 different supported chart types on 'Columns' (current new UI with icons).
-4. Complex 'Pie' chart: its slices are colored smoothly from HTML 'navy' to 'gold' + more custom titles present in graph (old UI).
-5. 100% supported 'Line' chart that is produced by Rickshaw's high-level library (new UI).
-6. Just resized SVG chart on its own popup window and ready to print on paper.
-7. Area chart showing nice smooth gradient colors (new UI + options: startbar="lime" & endbar="red"]).
+1. Cool tooltips visible here on 'Columns' charts.
+2. Area chart showing user defined smooth gradient colors (eq [... startbar="lime" & endbar="red"]).
+3. Button icons to call 5 different supported chart types on 'Columns' chart.
+4. A 'Pie' chart: its slices are colored smoothly from HTML 'navy' to 'gold' + more custom titles present in graph (old UI).
+5. A supported 'Line' chart that is produced by Rickshaw's library.
+6. Resized SVG chart on its own popup window + ready to print on paper.
+8. Shows how basic 'Columns' looks out together with home's pets example (old UI).
+9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.2.20 =
+Version 1.2.20 - Layout control of multiple charts on WP page works now (eq 'chartid'). Nice screenshot added. Github's docs updated.
 
 = 1.2.19 =
 Version 1.2.19

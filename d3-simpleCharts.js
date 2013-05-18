@@ -83,50 +83,47 @@ function cbaSort(a,b) { // custom sort by values of data (desc.)
 function abcSort(a,b) { // custom sort (asc.)
 	return a.value > b.value;
 }
-// TODO ...
-function showembed(chartid) {
-
-	var node = $('#'+chartid).html();
-	console.info(node);
-	// console.info(encodeURIComponent(node));
-	// return encodeURIComponent(node);
-	// '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>'
-}
 
 /*
 	newChart
 	--------
 	Deciding where data comes from and drawing it out.
 */
-function newChart(args2js,datafile) {
+function newChart(args2js) {
 
-	if (args2js.data.length == 0) {
+if (args2js.data.length == 0) {
 
+	// External data file
+	var datafile = args2js.datafile;
 	if (!datafile) { // Input must exists
 		console.error('Not found data input for chart from file or php direct call !');
-		return;
 	}
 	// This is how d3.js wants to read external files: AJAX calls + GETs, not pretty but works
 	if (datafile.indexOf('.tsv') > 0)
 	d3.tsv(datafile, function(error, data) {
 		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.csv') > 0)
 	d3.csv(datafile, function(error, data) { 
 		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.json') > 0)
 	d3.json(datafile, function(error, data) {
 		args2js.data = data;
+		drawChart(args2js);
 	});
 	if (datafile.indexOf('.xml') > 0)
 	d3.xml(datafile, function(error, data) {
+		// console.info(data);
+		// d3doc = data;
 		return;  // NOT working yet: TODO NEXT ...
 		args2js.data = data;
+		drawChart(args2js);
 	});
-}
-// Data in - draw it out
-drawChart(args2js);
+} else // data is coming via shortcode directly
+	drawChart(args2js);
 }
 
 /*
@@ -137,6 +134,10 @@ drawChart(args2js);
 */
 function drawChart(args2js,ctype,column,row) {
 // Hooks for own JavaScript apps
+
+console.info('ok');
+console.info(args2js);
+console.info('ok');
 
 if (row)
 	args2js.row = row;
@@ -154,7 +155,7 @@ if (args2js.datafile  && args2js.row) {
 	args2js.data = pickColumn(args2js.column, args2js.data);
 	args2js.column = 0;
 }
-// console.info(args2js.sort);
+console.info(args2js.sort);
 
 	if (args2js.sort) // Sort
 		if (args2js.sort == 'abc' || args2js.sort == 123 || args2js.sort == '123')
@@ -174,12 +175,12 @@ if (args2js.datafile  && args2js.row) {
 	$('#chart'+args2js.uniq).empty();
 
 	if (!args2js.margin)  // In case this is called from JS directly
-		args2js.margin = new Object({"top": 20, "right": 20, "bottom": 30, "left": 70});
+		args2js.margin = new Object({"top": 20, "right": 20, "bottom": 30, "left": 70}); 
 
 	if (!args2js.tooltips) // Tooltips active?
 		createTooltip();
 
-	var data = args2js.data;  // Taking data out for chart rendering modules
+	var data = args2js.data;  // Taking data out & more compatible for charting modules below
 	if (args2js.chart == 'columns')
 		simpleCols(data,args2js)
 	else if (args2js.chart == 'bars')
@@ -192,14 +193,19 @@ if (args2js.datafile  && args2js.row) {
 		line(data,args2js)
 	else
 		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
-
 }
 /*
 	extendData
 	----------
 	Extends data picking to other data sets if possible via external file data set.
 */
-function extendData(title) {
+function extendData(args2js,i) {
+
+	if (!args2js.backup) {
+		alert('There is no other data sets given to select for this chart.');
+		return;
+	}
+	if (!i) var i = 0;
 
 	var xtrasButt = '';
 	if (args2js.backup.length > 1) {
@@ -211,7 +217,7 @@ function extendData(title) {
 		for (var data=args2js.backup.length-1; data > -1; data--) {
 			xtrasButt = xtrasButt + '<option value="'+data+'">'+args2js.backup[data][labels[0]]+'</option>';
 		}
-		xtrasButt = '<select id="xdata" onchange="initDraw()">'+xtrasButt+'</select>';
+		xtrasButt = '<select id="xdata" onchange="initDraw('+i+')">'+xtrasButt+'</select>'; // d3charts[
 		// console.info(xtrasButt);
 		$('#extras').empty();
 		$('#extras').html(xtrasButt); // Placing menu visible by JQuery
@@ -219,24 +225,28 @@ function extendData(title) {
 		alert('Only one data set is given as an input at the moment.');
 }
 // Small help function to enable drawChart for other data sets
-function initDraw() {
+function initDraw(i) {
 	var row = $('#xdata').val();
+	var args2js = d3charts[i];
 	args2js.data = args2js.backup;
 	drawChart(args2js,args2js.chart,0,parseInt(row)+1);
 }
+function sort(i) {
+	// console.info($('#xsort').val());
+	if (!i) var i = 0;
 
+	var stype = $('#xsort').val();
+	d3charts[i].sort = stype;
+	drawChart(d3charts[i],d3charts[i].chart);
+}
+/*
 function sort() {
 	console.info($('#xsort').val());
 	var stype = $('#xsort').val();
 	args2js.sort = stype;
 	drawChart(d3charts[0],args2js.chart);
 }
-
-var tooltip;
-var defaultOpacity = 0.8;
-var dateFormat = d3.time.format("%d-%b-%Y");
-var numberFormat = d3.format("n");
-
+*/
 /*
 	simpleCols
 	----------
@@ -253,8 +263,8 @@ var numberFormat = d3.format("n");
 function simpleCols(data,args2js) {
 // console.info(args2js);
 
-// console.info(data);
-// console.info(args2js);
+console.info(data);
+console.info(args2js);
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -370,13 +380,6 @@ if (args2js.colors)
 
 	if (!args2js.tooltips) // Tooltips active?
 		addTooltips();
-}
-
-function addTooltips() {
-	d3.selectAll(".bar")	
-		.on("mouseover", showTooltip)
-		.on("mousemove", moveTooltip)
-		.on("mouseout", hideTooltip);
 }
 
 /*
@@ -768,6 +771,7 @@ var color = d3.scale.ordinal()
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.label });
 // });
+
 	if (!args2js.tooltips) // Tooltips active?
 		addTooltips();
 }
@@ -1077,6 +1081,11 @@ function svgsize(svgid, sizer) {
 
 // Tooltip's support functions
 
+var tooltip;
+var defaultOpacity = 0.8;
+var dateFormat = d3.time.format("%d-%b-%Y");
+var numberFormat = d3.format("n");
+
 function createTooltip() {
 	if(tooltip == null) {
 		tooltip = d3.select("body").append("div")
@@ -1087,6 +1096,13 @@ function createTooltip() {
     		.on("touchstart", hideTooltip);
 	}
 	return tooltip;
+}
+
+function addTooltips() {
+	d3.selectAll(".bar")	
+		.on("mouseover", showTooltip)
+		.on("mousemove", moveTooltip)
+		.on("mouseout", hideTooltip);
 }
 
 function showTooltip(d) {
@@ -1159,3 +1175,13 @@ function hideTooltip(d) {
 function isNumber(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 };
+
+// TODO: embedding link
+function showembed(chartid) {
+
+	var node = $('#'+chartid).html();
+	console.info(node);
+	// console.info(encodeURIComponent(node));
+	// return encodeURIComponent(node);
+	// '<a href="'+url2+'?chartid='+showembed(cid2)+'" target="_blank"><?php echo $embedtitle ?></a>'
+}
