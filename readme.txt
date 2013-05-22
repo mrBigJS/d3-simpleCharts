@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.20
+Stable tag: 1.2.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ The available chart types now are here: 'Columns', 'Bars', 'Line', 'Pie', 'Area'
 
 Pretty *simple* and obvious there, yes!!?
 
-You can define *data input values* on the standard and uniform way from *wordpress shortcode's arguments* directly or from *external data files*. 
+You can define *data input values* on the standard and uniform way from *wordpress shortcode's arguments* directly or from *external input data files*. 
 
 Shortcode's input is preferred way always as the primary source of data values & their labels (if both are given).
 
@@ -181,6 +181,12 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.2.22 =
+Version 1.2.22 - New handy keywords 'first' and 'last' for reading 2x2 data set from external input file. New classes of CSS for X and Y axis titles and examples on default style file. More updates to GitHub's docs.
+
+= 1.2.21 =
+Version 1.2.21 - Better scaling of mins & maxs on axis. 'Caption' adding below chart(s). Error messages & warnings for uncorrect data sets.
 
 = 1.2.20 =
 Version 1.2.20 - Layout control of multiple charts on WP page works now (eq 'chartid'). Nice screenshot added. Github's docs updated.

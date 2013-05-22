@@ -46,9 +46,13 @@ function printArr(arr,dtype) {
 
 function pickRow(i, data) {
 
+	if (i == 'first')
+		i = 1;
+	if (i == 'last')
+		i = data.length;
 	if (i>data.length)
 		i = data.length;
-console.info('pickRow!');
+// console.info('pickRow!');
 	// Reading data from data's row
 	// Assuming that object is: { FOO, label1:value2, label2:value2, ... }
 	var elem = 0;
@@ -135,9 +139,7 @@ if (args2js.data.length == 0) {
 function drawChart(args2js,ctype,column,row) {
 // Hooks for own JavaScript apps
 
-console.info('ok');
-console.info(args2js);
-console.info('ok');
+// console.info(args2js);
 
 if (row)
 	args2js.row = row;
@@ -155,7 +157,7 @@ if (args2js.datafile  && args2js.row) {
 	args2js.data = pickColumn(args2js.column, args2js.data);
 	args2js.column = 0;
 }
-console.info(args2js.sort);
+// console.info(args2js.sort);
 
 	if (args2js.sort) // Sort
 		if (args2js.sort == 'abc' || args2js.sort == 123 || args2js.sort == '123')
@@ -263,8 +265,8 @@ function sort() {
 function simpleCols(data,args2js) {
 // console.info(args2js);
 
-console.info(data);
-console.info(args2js);
+// console.info(data);
+// console.info(args2js);
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -288,6 +290,10 @@ var x = d3.scale.ordinal()
 	.rangeRoundBands([0, width], .2);
 
 var min_y = 0;
+var min2 = d3.min(data, function(d) { return d.value; });
+if (min2 < min_y)
+	min_y = min2-2;
+
 if (args2js['minrange'])
 	min_y = args2js['minrange'];
 
@@ -324,7 +330,7 @@ var yAxis = d3.svg.axis()
   });
 // console.info(data);
 
-var max_y = d3.max(data, function(d) { return d.value; });
+var max_y = d3.max(data, function(d) { return d.value; })+1;
 if (args2js['maxrange'])
 	max_y = args2js['maxrange'];
 
@@ -341,6 +347,7 @@ if (args2js['maxrange'])
       .attr("x", Math.round(width/2)) 
       // .attr("dx", -50)
 	  .attr("dy", 30)
+  	  .attr("class", "xtitle axis")
       .style("text-anchor", "end")
       .text(args2js.xtitle); 
 
@@ -352,7 +359,8 @@ if (args2js['maxrange'])
     .append("text")
       .attr("transform", "rotate(-90)")
 	  .attr("y", Math.round(height/2))
-      .attr("y", -30)
+      .attr("y", -40)
+	  .attr("class", "ytitle axis")
       // .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text(args2js.ytitle); 
@@ -498,8 +506,8 @@ svg.selectAll(".bar")
   // x.domain([min, d3.max(datas, function(d) { return d.value; })]);
 
     // x.domain(datas.map(function(d) { return d.label; }));
-  console.info(x.domain());
-    console.info(y.domain());
+  // console.info(x.domain());
+  // console.info(y.domain());
   
 svg.append("g")
     .attr("class", "x axis")
@@ -577,8 +585,8 @@ var x = d3.scale.ordinal()
 
 //	console.info(d3.range(data.length));
 
-var min = d3.min(data, function(d) { return d.value; });
-if (min)
+var min = d3.min(data, function(d) { return d.value; })-2;
+if (min > 0)
 	min = 0;
 if (args2js['minrange'])
 	min = args2js['minrange'];
@@ -633,7 +641,7 @@ d3.tsv("data2.tsv", function(error, data) {
 	console.info(d);
   });
 */
-// Linear gradient coloring of path's area: from left to right from start- to endbar
+// Linear gradient coloring of path's area: from left to right = startbar to endbar
 if (args2js.startbar || args2js.endbar) {
 
 var startcol = "navy";
@@ -676,7 +684,8 @@ var	lg = d3.select('#'+gradid);
       .call(xAxis)
 	.append("text")
       .attr("x", Math.round(parseInt(width)/2)) 
-	  .attr("y", 25)
+	  .attr("y", 30)
+	  .attr("class", "xtitle axis")
       .style("text-anchor", "end")
       .text(args2js.xtitle);
 
@@ -685,8 +694,9 @@ var	lg = d3.select('#'+gradid);
       .call(yAxis)
     .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", -30)
+      .attr("y", -40)
       // .attr("dy", ".71em")
+	  .attr("class", "ytitle axis")
       .style("text-anchor", "end")
       .text(args2js.ytitle);
 
@@ -747,10 +757,13 @@ var svg = d3.select('#chart'+args2js.uniq).append("svg")
 	
 var data = datas;
 
+var negative = false;
  data.forEach(function(d) {
-	if (d.value > 0) { // Must be something positive to show on pie
+	if (d.value > 0) { // Must be positive data to show out on pie
 		d.value = +d.value;
-	}
+
+	} else
+		negative = true;
 });
 
 var color = d3.scale.ordinal()
@@ -770,8 +783,13 @@ var color = d3.scale.ordinal()
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.label });
+	  
+// A note about filtering data
+if (negative) {
+	$('#chart'+args2js.uniq).append('<br /><br /><b>Warning</b>: some negative data points were removed from data input data set.');
+	return;
+}
 // });
-
 	if (!args2js.tooltips) // Tooltips active?
 		addTooltips();
 }
@@ -809,7 +827,9 @@ function checkTicks(args2js,height,width,xy,xtype) {
 	}
 }
 }
-// Applying rickshaw's lib for line chart here
+
+// Applying rickshaw's lib for line chart here (TODO: real simpleLine)
+//
 function line(datas,args2js) {
 
 // console.info(args2js.data);
@@ -821,9 +841,11 @@ var Xmap = new Object();
 Xmap[0] = '';
 
 var last = 0;
+var negative = false;
 for (i=0; i<args2js.data.length; i++) {
 	last = parseFloat(args2js.data[i].value);
-	Xs.push( { x:i+1, y:parseFloat(args2js.data[i].value) } );
+	if (last < 0) negative = true;
+	Xs.push( { x:i+1, y:last } );
 	// Xmap.push( { i:args2js.data[i].label } );
 	Xmap[i+1] = args2js.data[i].label;
 }
@@ -841,6 +863,14 @@ var ymax = '';
 if (args2js.maxrange)
 	ymax = args2js.maxrange;
 
+$(document).ready(function() {
+
+if (negative) {
+	$('#chart'+args2js.uniq).empty();
+	$('#chart'+args2js.uniq).append('Line chart type can only show positive data values with current version - sorry.');
+	return;
+}
+
 var graph = new Rickshaw.Graph( {
 	element: document.getElementById("chart"+args2js.uniq),
 	renderer: 'line',
@@ -849,7 +879,7 @@ var graph = new Rickshaw.Graph( {
 	height: args2js.height, 	//300,
 	width: args2js.width, 		// 800,
 	series: [ 
-			{ data: Xs, color: mycolor, name:"minu sarja" } // TODO: args2js.title }
+			{ data: Xs, color: mycolor, name:"my data series" } // TODO: args2js.title }
 /* // Ex. of 2 data series
 { data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 } ], color: "#c05020" }, 
 { data: [ { x: 0, y: 80 }, { x: 1, y: 200 }, { x: 2, y: 100 } ], color: "#30c020" }
@@ -884,7 +914,7 @@ var x_ticks = new Rickshaw.Graph.Axis.X( {
 // Print it all out
 graph.render();
 
-// TODO: fix hover's popup bubble position
+// TODO: fix tooltip bubble position
 /*
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 graph: graph,
@@ -898,6 +928,8 @@ return content;
 */
 // Setting text outlook by jQuery
 $('#chart'+args2js.uniq+' text').css('font','8px arial,sans-serif');
+
+});
 
 return;
 
@@ -964,11 +996,11 @@ function exampleData() {
 	];
 }
 
-// Generates color of bars/pie slices based on given starting and ending colors and returns its HTML color codes array
+// Generates smooth colors based on given starting and ending colors and returns its HTML color codes
 function getColorRamp(startColor, steps, endColor) {
 
 	var colors = new Array();
-	if (!startColor.length)  // We give up coloring for the CSS declarations over here
+	if (!startColor.length)  // We give up coloring task for the CSS declarations over here
 		return '';
 
 	var csteps = 0;
@@ -982,7 +1014,7 @@ function getColorRamp(startColor, steps, endColor) {
 			csteps = (1-acolor.l) / (steps); // Target range: (startColor lightness ... white/1)
 			ssteps = (1-acolor.s) / steps;
 		}
-		// Generating real colors (without endColor given)
+		// Generating colors (without endColor given)
 		var thecolor = acolor;
 		for (i=0; i<steps; i++) {
 			colors.push(thecolor.toString());
@@ -994,7 +1026,7 @@ function getColorRamp(startColor, steps, endColor) {
 				thecolor = thecolor.brighter(csteps*4);
 		}
 	} else {  
-		// Here we have start and end color to travel from => to by using steps of given color changes
+		// Here we have start and end color traveling from => to by using steps of given color changes
 		// We encode start and end colors by using Lab's color model's components from HTML's color strings
 		var startColor = d3.lab(startColor);
 		var Lab_start = new Array(startColor.l, startColor.a, startColor.b);
@@ -1101,7 +1133,7 @@ function createTooltip() {
 function addTooltips() {
 	d3.selectAll(".bar")	
 		.on("mouseover", showTooltip)
-		.on("mousemove", moveTooltip)
+//		.on("mousemove", moveTooltip)
 		.on("mouseout", hideTooltip);
 }
 

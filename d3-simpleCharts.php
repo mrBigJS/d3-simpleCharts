@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.20
+Version: 1.2.22
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -62,10 +62,10 @@ foreach(array_keys($labels) as $i) {
 // echo json_encode($points2);
 // var_dump(json_decode($points));
 
-// All other - optional - arguments from php shortcode call to php args array
+// All options from php shortcode call to php args array
 $args2js = array();
 
-// All these 'X' labels inside $data['X'] are available from shortcode
+// All 'X' labels inside $data['X'] are available & active
 
 $args2js["uniq"] = $uniq; // Unique ID of this new chart
 $args2js["chartid"] = $data["chartid"]; // user's own container ID 
@@ -92,14 +92,16 @@ $args2js["ticks"] = testDef(10,$data['ticks']); // If there is horizontal or ver
 $args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linear axis of values
 $args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
 
-$args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
-$main = $args2js['title']; // Major title
-
 // Coloring of chart objects, linear gradient color ends
 $args2js['startbar'] = testDef('',$data['startbar']); // Starting color 1st bar/slice of chart
 $args2js['endbar'] = testDef('',$data['endbar']); // Ending color of smooth gradient
 
-$mstyle = testDef("",$data['mstyle']); // Title's position & style <TD>
+$args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
+$main = $args2js['title']; // Major title
+
+$args2js['caption'] = testDef('',$data['caption']); // Longer desc info below chart
+
+$mstyle = testDef("",$data['mstyle']); // Title's position & style (for <TD>)
 $logo = testDef("",$data['logo']); // Possible url of logo (eq company symbol, etc)
 
 if (strlen($logo))
@@ -162,7 +164,6 @@ else
 
 <script>
 
-// First things at first: generate the HTML -container for its new chart
 var url = '<? echo $url ?>';
 var chartid = 'chart<? echo $uniq ?>';
 var tableid = 'table<? echo $uniq ?>';
@@ -220,7 +221,7 @@ elink = '';
 // new window popup's opening
 var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 	logofile = "'"+logofile+"'";
-// style file name for popup charts - too
+// style file name
 var cssfile = "'<?php echo $cssfile ?>'";
 
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
@@ -231,7 +232,7 @@ var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofil
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO
 var sortbutt = '<select '+fontx+' id="xsort" onchange="sort('+last_chart+')"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
 
-// Our chart container in HTML is <table> element with custom styles
+// Our chart container in HTML is <table> element with custom styles for new chart
 var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php echo $backstyle ?>" width="'+(150+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
@@ -243,6 +244,9 @@ if (url) // Here is row where D3 draws its chart - finally
 else
 	// html = html + '<tr><td id="'+ chartid + '" ' + title + '></td></tr>';
 	html = html + '<tr><td class="svgchart" ' + title + '>'+chartX+'</td></tr>';
+
+if (args2js.caption)
+	html = html + '<tr><td class="captiontext">'+args2js.caption+'</td></tr>';
 
 var id = "'"+chartid+"'";
 var odform = "'table'";
@@ -297,6 +301,7 @@ if (typeof chartQ == 'undefined')
 </script>
 <?php
 };
+// Being tolerant for user's typos
 add_shortcode("simpleCharts", "simpleBarsDev");
 add_shortcode("SimpleCharts", "simpleBarsDev");
 add_shortcode("simplecharts", "simpleBarsDev");

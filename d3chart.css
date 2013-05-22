@@ -23,6 +23,13 @@
 	text-shadow: 2px 2px darkgray;
 }
 
+/* Caption below chart */
+.captiontext
+{
+	text-align:center; 
+	font-size: 10px;
+}
+
 /* One graphical segment of each data point */
 .bar
 {
@@ -47,7 +54,7 @@
 	stroke-width: 0.2;
 }
 
-/* Both axis elements */
+/* Both axis all visual elements */
 .axis
 {
 	font-family: Arial, Helvetica, sans-serif;
@@ -55,14 +62,24 @@
 	color: blue;
 }
 
-/* X-axis elements */
+/* X-axis tick labels */
 .x
 {
 }
-
-/* Y-axis elements */
+/* Y-axis tick labels */
 .y
 {
+}
+
+/* X-axis title */
+.xtitle
+{
+	font-weight:bold;
+}
+/* Y-axis title */
+.ytitle
+{
+	font-weight:bold;
 }
 
 /* Tick lines of chart */
