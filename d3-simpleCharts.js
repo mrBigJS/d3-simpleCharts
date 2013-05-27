@@ -159,11 +159,17 @@ if (args2js.datafile  && args2js.row) {
 }
 // console.info(args2js.sort);
 
-	if (args2js.sort) // Sort
+	if (args2js.sort) { // Sort option active
+		for (i=0; i<args2js.data.length; i++)  // Make sure values are sortable ok (eq floats)
+			if (typeof args2js.data[i].value == 'string')
+				args2js.data[i].value = parseFloat(args2js.data[i].value);
+
 		if (args2js.sort == 'abc' || args2js.sort == 123 || args2js.sort == '123')
 			args2js.data.sort(abcSort)
-		else if (args2js.sort == 'cba' || args2js.sort == 321 || args2js.sort == '321')
+		else if (args2js.sort == 'cba' || args2js.sort == 321 || args2js.sort == '321') {
 			args2js.data.sort(cbaSort);
+		}
+	}
 
 	if (ctype) // Global chart type can be overwritten by ctype input
 		args2js.chart = ctype;
@@ -241,14 +247,7 @@ function sort(i) {
 	d3charts[i].sort = stype;
 	drawChart(d3charts[i],d3charts[i].chart);
 }
-/*
-function sort() {
-	console.info($('#xsort').val());
-	var stype = $('#xsort').val();
-	args2js.sort = stype;
-	drawChart(d3charts[0],args2js.chart);
-}
-*/
+
 /*
 	simpleCols
 	----------
@@ -328,7 +327,6 @@ var yAxis = d3.svg.axis()
   data.forEach(function(d) {
 	d.value = +d.value;
   });
-// console.info(data);
 
 var max_y = d3.max(data, function(d) { return d.value; })+1;
 if (args2js['maxrange'])
@@ -423,7 +421,7 @@ for (var point in datas)
 		if (datas[point].value < 0)
 			allpos = false;
 	}
-
+  
 // TODO2: test with neg/pos CSS colors from PHP call level
 /*
 .bar.positive {
@@ -441,11 +439,12 @@ var width = width - margin.left - margin.right,
 var x0 = Math.max(-d3.min(data), d3.max(data));
 if (args2js.maxrange)
 	x0 = args2js.maxrange;
+x0 = parseFloat(x0);
 
 min = 0;
 if (args2js['minrange'])
 	min = args2js['minrange'];
-
+ 
 var x = d3.scale.linear()
     .domain([-x0, x0])
     .range([0, width])
@@ -453,9 +452,10 @@ var x = d3.scale.linear()
 if (allpos)  // All input data points > 0 
 	x = d3.scale.linear()
 		.domain([min, x0])
-		.range([Math.round(0+(x0-min)/x0*width), width])
+				//.range([Math.round(0+(x0-min)/x0*width), width])
+		.range([0, width])
 		.nice();
-
+		
 // Stretching y-axes higher
 height = 1.5 * height;
 		
@@ -494,9 +494,8 @@ svg.selectAll(".bar")
     .attr("x", function(d) { return x(Math.min(min, d)); })
     .attr("y", function(d, i) { return y(i); })
     .attr("width", function(d) { return Math.abs(x(d) - x(min)); })
-//	.style("fill", function(d, i) { return args2js.colors[i]; })
     .attr("height", y.rangeBand()+6);
- 
+ // console.info(x(d)); console.info(x(min)); 
  if (args2js.colors)
   svg.selectAll(".bar")
  	.style("fill", function(d, i) { return args2js.colors[i]; });
@@ -515,6 +514,7 @@ svg.append("g")
 	.append("text")
       .attr("x", Math.round(width/2)+30) 
 	  .attr("y", height+20)
+	  .attr("class", "ytitle axis")
       .style("text-anchor", "end")
       .text(args2js.ytitle);
 
@@ -529,7 +529,8 @@ svg.append("g")
 	.append("text")
       .attr("transform", "rotate(-90)")
 	  .attr("y", Math.round(height/2))
-      .attr("x", -30)
+      .attr("x", -40)
+	  .attr("class", "xtitle axis")
       .style("text-anchor", "end")
       .text(args2js.xtitle); 
 
@@ -730,7 +731,8 @@ if (!args2js.margin) {
 }
 var margin = args2js.margin;
 
-var    radius = Math.max(width, height) / 2;
+var scaler = 2.5;
+var radius = Math.max(width, height) / scaler;
 /*
 var color = d3.scale.ordinal()
     .range(["navy","#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
@@ -746,12 +748,9 @@ var pie = d3.layout.pie()
 chartid = 'g'+args2js.uniq;
 d3.select('#chart'+args2js.uniq+' svg').remove(this); // Removing old SVG chart, if any exits.
 var svg = d3.select('#chart'+args2js.uniq).append("svg")
-    //.attr("width", width)
-    //.attr("height", height)
 	.attr("width", 2 * radius)
     .attr("height", 2 * radius)
   .append("g")
-    // .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
     .attr("class", chartid)
 	.attr("transform", "translate(" + radius + "," + radius + ")");
 	
@@ -761,7 +760,6 @@ var negative = false;
  data.forEach(function(d) {
 	if (d.value > 0) { // Must be positive data to show out on pie
 		d.value = +d.value;
-
 	} else
 		negative = true;
 });
@@ -772,7 +770,7 @@ var color = d3.scale.ordinal()
   var g = svg.selectAll(".arc")
       .data(pie(data))
     .enter().append("g")
-      .attr("class", "bar"); // arc
+      .attr("class", "bar areabar"); // arc
 
   g.append("path")
       .attr("d", arc)
@@ -1154,8 +1152,15 @@ function showTooltip(d) {
 		.duration(100)
 		.delay(50)
 		.style("opacity", 1.0);
- 
+
+	// console.info(typeof d); 
 	tooltip.html(function() {
+			if (typeof d == 'number') { // Case of simpleBars
+				var tmp = d;
+				d = new Object();
+				d.value = tmp;
+				d.label = '';
+			}
 			if (typeof d.label == 'undefined')
 				d.label = '';
 			var str = "<p><b>" + d.label + '</b><br />' + d.value + "</p>"; // class='ISO-3166-1'

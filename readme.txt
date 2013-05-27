@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.22
+Stable tag: 1.2.23
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -181,6 +181,10 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.2.23 =
+Version 1.2.23 - 
+Sort works for external input file data more logically. Scaling more reasonable size of Pie. Better support of Bars & their tooltips. Better default style file example.
 
 = 1.2.22 =
 Version 1.2.22 - New handy keywords 'first' and 'last' for reading 2x2 data set from external input file. New classes of CSS for X and Y axis titles and examples on default style file. More updates to GitHub's docs.

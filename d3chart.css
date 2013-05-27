@@ -30,20 +30,20 @@
 	font-size: 10px;
 }
 
-/* One graphical segment of each data point */
+/* One graphical segment of each data point on charts */
 .bar
 {
-	fill:navy;
+	fill:black;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
-	stroke-width: 0.9;
-	stroke: black;
+	stroke-width: 0.4;
+	stroke: gray;
 }
 
-/* Shape of area chart */
+/* Segments of just area chart, overruling above if needed */
 .areabar
 {
-	stroke-width: 0.9;
+	stroke-width: 0.2;
 	stroke: black;
 }
 
