@@ -207,7 +207,7 @@ if (args2js.datafile  && args2js.row) {
 	----------
 	Extends data picking to other data sets if possible via external file data set.
 */
-function extendData(args2js,i) {
+function extendData(args2js,i,slider) {
 
 	if (!args2js.backup) {
 		alert('There is no other data sets given to select for this chart.');
@@ -222,13 +222,23 @@ function extendData(args2js,i) {
 		for (var lab in args2js.backup[0])
 			labels.push(lab);
 
-		for (var data=args2js.backup.length-1; data > -1; data--) {
-			xtrasButt = xtrasButt + '<option value="'+data+'">'+args2js.backup[data][labels[0]]+'</option>';
+		var xlen = args2js.backup.length-1;
+		for (var data=xlen; data > -1; data--) {
+			if (data < xlen)
+				xtrasButt = '<option value="'+data+'">'+args2js.backup[data][labels[0]]+'</option>' + xtrasButt;
+			else
+				xtrasButt = '<option value="'+data+'" selected>'+args2js.backup[data][labels[0]]+'</option>' + xtrasButt;
 		}
 		xtrasButt = '<select id="xdata" onchange="initDraw('+i+')">'+xtrasButt+'</select>'; // d3charts[
-		// console.info(xtrasButt);
+
+		if (slider)
+			xtrasButt += '<br /><div onchange="initDraw('+i+')" id="xdata-slider"></div>';
+		
 		$('#extras').empty();
-		$('#extras').html(xtrasButt); // Placing menu visible by JQuery
+		$('#extras').html(xtrasButt); // Placing extend data menu visible
+
+		if (slider)
+			newSlider('xdata'); // Visual time series slider's startup
 	} else
 		alert('Only one data set is given as an input at the moment.');
 }
@@ -1212,6 +1222,31 @@ function hideTooltip(d) {
 function isNumber(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 };
+
+function newSlider(selectID) {
+
+$(function() {
+
+var select = $( "#"+selectID );
+
+var slider = $( "#"+selectID+'-slider' ).slider({
+min: 1,
+max: select[ 0 ].length,
+range: "min",
+value: select[ 0 ].selectedIndex + 1,
+slide: function( event, ui ) {
+	select[ 0 ].selectedIndex = ui.value - 1;
+}
+
+});
+
+$( "#"+selectID ).change(function() {
+	slider.slider( "value", this.selectedIndex + 1 );
+});
+
+});
+
+}
 
 // TODO: embedding link
 function showembed(chartid) {

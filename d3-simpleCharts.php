@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.23
+Version: 1.2.24
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -135,6 +135,13 @@ $switcher = testDef(0,$data['noswitcher']); // No chart type switcher buttons
 $series = testDef(0,$data['noseries']); // No more data button (2x2 series)
 $export = testDef(0,$data['noexport']); // No data export buttons
 	$exportsvg = testDef(0,$data['exportsvg']); // Chart's SVG HTML visible for export button, def: no
+
+$slider = testDef(0,$data['notimeslider']); // Slider of time series
+if ($slider == 0) {
+	echo '<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />';
+	echo '<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>';
+}
+
 $embed = testDef(0,$data['noembed']); // No embed link visible
 $embedtitle = testDef('Embed',$data['embedtitle']); // Custom title for embed
 
@@ -190,20 +197,25 @@ var cicons = ["columns.png","bars.png","area.png","line.png","pie.png"];
 // Referring to just now added one for creating its buttons
 var last_chart = d3charts.length-1;
 var fontx = ' style="font-size:xx-small; cursor:pointer;" ';
-var butts = '<span style="background-color:darkgray; float:right;">';
+var butts = '<span class="buttons">';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> <img src="'+rootp+cicons[0]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> <img src="'+rootp+cicons[1]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> <img src="'+rootp+cicons[2]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[4]+')"> <img src="'+rootp+cicons[4]+'"> </button></span>';
 
-var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
+var slider = 0;
+if (<?php echo $slider ?>==0) {  // Slider of time series showing out
+	slider = 1;
+}
+
+var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
 if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher 
-		butts = '';
+	butts = '';
 }
 if (<?php echo $series ?>==1) {  // No buttons: more data
-		otherbutt = '';
+	otherbutt = '';
 }
 
 // Embed link element
@@ -229,15 +241,20 @@ var rootp = 'wp-content/plugins/d3-simpleCharts/';
 // console.info(logofile);
 var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
-var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr>'; // TODO
+var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr><tr><td>.</td></tr>'; // TODO
 var sortbutt = '<select '+fontx+' id="xsort" onchange="sort('+last_chart+')"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
 
 // Our chart container in HTML is <table> element with custom styles for new chart
 var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php echo $backstyle ?>" width="'+(150+parseInt(args2js.width))+'">';
 // if ('<? echo $embed ?>')
 	html = html+embed;
-html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>">'+butts+'<br /> <h3><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title & logo (+ its CSS style)
-html = html + '<tr><td id="extras" style="float:right">'+otherbutt+'</td><td>'+sortbutt+'</td></tr>';
+
+// butts
+html = html + '<tr><td>'+butts+'</td></tr>';
+html = html + '<tr><td id="extras" class="buttons">'+otherbutt+'</td><td class="buttons">'+sortbutt+'</td></tr>';
+
+html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>"><br /> <h3><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title + its logo
+
 var chartX = '<div style="" id="'+ chartid + '"></div>';
 if (url) // Here is row where D3 draws its chart - finally
 	html = html + '<tr><td class="svgchart"><a id="'+ chartid + '" ' + title + ' ' + url + '></a></td></tr>';
@@ -382,7 +399,23 @@ function getArr($array) {
 	$array = str_replace('(', '',$array);
 	$array = str_replace(')', '',$array);
 	$array = str_replace(', ', ',',$array);
-	return explode(',',$array);  // cells must be separated by ',' letter
+	return explode(',',$array);  // cells must be separated by ',' letter 
 }
+
+function newSlider($data) {
+?>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
+
+<div id="<?php echo $data['name'] ?>-slider"></div>
+<script>
+newSlider('<?php echo $data['name'] ?>'); // ,'minbeds-slider')
+</script>
+
+<?php
+}
+add_shortcode("aSlider", "newSlider");
 
 ?>

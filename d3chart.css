@@ -101,6 +101,12 @@
 .domain
 {
 }
+/* All buttons outlook */
+.buttons 
+{
+	background-color:darkgray;
+	float:right;
+}
 
 /* Tooltip definitions */
 .ISO-3166-1 {
