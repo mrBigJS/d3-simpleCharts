@@ -91,7 +91,7 @@ function abcSort(a,b) { // custom sort (asc.)
 /*
 	newChart
 	--------
-	Deciding where data comes from and drawing it out.
+	Deciding where data comes from and drawing it out (main from PHP).
 */
 function newChart(args2js) {
 
@@ -179,16 +179,16 @@ if (args2js.datafile  && args2js.row) {
 		args2js.colors = getColorRamp(args2js.startbar, args2js.data.length, args2js.endbar);
 	// console.info(args2js);
 
-	// Emptying this chart's space
+	// Emptying chart's container at first
 	$('#chart'+args2js.uniq).empty();
 
-	if (!args2js.margin)  // In case this is called from JS directly
+	if (!args2js.margin)  // In the case this is called from JS directly
 		args2js.margin = new Object({"top": 20, "right": 20, "bottom": 30, "left": 70}); 
 
 	if (!args2js.tooltips) // Tooltips active?
 		createTooltip();
-
-	var data = args2js.data;  // Taking data out & more compatible for charting modules below
+/*
+	var data = args2js.data;  // Taking data out (why?)
 	if (args2js.chart == 'columns')
 		simpleCols(data,args2js)
 	else if (args2js.chart == 'bars')
@@ -201,19 +201,33 @@ if (args2js.datafile  && args2js.row) {
 		line(data,args2js)
 	else
 		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
+*/
+	if (args2js.chart == 'columns')
+		simpleCols(args2js)
+	else if (args2js.chart == 'bars')
+		simpleBars(args2js);
+	else if (args2js.chart == 'area')
+		simpleArea(args2js);
+	else if (args2js.chart == 'pie')
+		simplePie(args2js)
+	else if (args2js.chart == 'line')
+		line(args2js)
+	else
+		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
 }
 /*
 	extendData
 	----------
 	Extends data picking to other data sets if possible via external file data set.
 */
-function extendData(args2js,i,slider) {
+function extendData(args2js,i,slider,id) {
 
 	if (!args2js.backup) {
 		alert('There is no other data sets given to select for this chart.');
 		return;
 	}
 	if (!i) var i = 0;
+	if (!id) id = '';
 
 	var xtrasButt = '';
 	if (args2js.backup.length > 1) {
@@ -229,22 +243,22 @@ function extendData(args2js,i,slider) {
 			else
 				xtrasButt = '<option value="'+data+'" selected>'+args2js.backup[data][labels[0]]+'</option>' + xtrasButt;
 		}
-		xtrasButt = '<select id="xdata" onchange="initDraw('+i+')">'+xtrasButt+'</select>'; // d3charts[
+		xtrasButt = '<select id="xdata'+i+'" onchange="initDraw('+i+')">'+xtrasButt+'</select>'; // d3charts[
 
 		if (slider)
-			xtrasButt += '<br /><div onchange="initDraw('+i+')" id="xdata-slider"></div>';
-		
-		$('#extras').empty();
-		$('#extras').html(xtrasButt); // Placing extend data menu visible
+			xtrasButt += '<br /><div onchange="initDraw('+i+')" id="xdata'+i+'-slider"></div>';
+
+		$('#table'+id+' #extras').empty();
+		$('#table'+id+' #extras').html(xtrasButt); // Placing extend data menu visible
 
 		if (slider)
-			newSlider('xdata'); // Visual time series slider's startup
+			newSlider('xdata'+i); // Visual time series slider's startup
 	} else
 		alert('Only one data set is given as an input at the moment.');
 }
 // Small help function to enable drawChart for other data sets
 function initDraw(i) {
-	var row = $('#xdata').val();
+	var row = $('#xdata'+i).val();
 	var args2js = d3charts[i];
 	args2js.data = args2js.backup;
 	drawChart(args2js,args2js.chart,0,parseInt(row)+1);
@@ -271,11 +285,11 @@ function sort(i) {
 	Reference: 
 	http://bl.ocks.org/3885304
 */
-function simpleCols(data,args2js) {
-// console.info(args2js);
+function simpleCols(args2js) {
+
+var data = args2js.data;
 
 // console.info(data);
-// console.info(args2js);
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -411,7 +425,9 @@ if (args2js.colors)
 	Reference: 
 	http://bl.ocks.org/mbostock/2368837
 */
-function simpleBars(datas,args2js) {
+function simpleBars(args2js) {
+
+var datas = args2js.data;
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -563,7 +579,9 @@ svg.append("g")
 	Reference: 
 	http://bl.ocks.org/3883195
 */
-function simpleArea(datas,args2js) {
+function simpleArea(args2js) {
+
+var data = args2js.data;
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -580,7 +598,7 @@ var parseDate = d3.time.format("%d-%b-%y").parse;
 var allpositive = true;
 // Input data format, example:
 // var data = [{"label":"A0", "value":7.10},{"label":"A1", "value": -8.3},{"label":"A2", "value": 3.3}];
-var data = datas;
+
  data.forEach(function(d) { 
 	// if (d.value > 0) { // Uncomment & input must be something positive
 		d.value = +d.value;
@@ -624,7 +642,7 @@ var area = d3.svg.area()
     .y1(function(d) { return y(d.value); });
 
 x.domain(new Array());
-x.domain(datas.map(function(d) { return d.label; }));
+x.domain(data.map(function(d) { return d.label; }));
 
 var line = d3.svg.line()
     .x(function(d,i) { return x(i); })
@@ -729,7 +747,9 @@ var	lg = d3.select('#'+gradid);
 	Reference: 
 	http://bl.ocks.org/mbostock/3887235
 */
-function simplePie(datas,args2js) {
+function simplePie(args2js) {
+
+var data = args2js.data;
 
 // Size of output chart + margins
 var width = args2js.width;
@@ -763,8 +783,6 @@ var svg = d3.select('#chart'+args2js.uniq).append("svg")
   .append("g")
     .attr("class", chartid)
 	.attr("transform", "translate(" + radius + "," + radius + ")");
-	
-var data = datas;
 
 var negative = false;
  data.forEach(function(d) {
@@ -838,7 +856,9 @@ function checkTicks(args2js,height,width,xy,xtype) {
 
 // Applying rickshaw's lib for line chart here (TODO: real simpleLine)
 //
-function line(datas,args2js) {
+function line(args2js) {
+
+var data = args2js.data;
 
 // console.info(args2js.data);
 

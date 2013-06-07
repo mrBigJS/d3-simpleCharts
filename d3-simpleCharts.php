@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.24
+Version: 1.2.25
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -209,7 +209,8 @@ if (<?php echo $slider ?>==0) {  // Slider of time series showing out
 	slider = 1;
 }
 
-var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
+var idX = "'<? echo $uniq ?>'";
+var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
 
 if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher 
 	butts = '';
@@ -402,6 +403,10 @@ function getArr($array) {
 	return explode(',',$array);  // cells must be separated by ',' letter 
 }
 
+/* A small API function for creating slider on any WP page/post - NOT called from simpleChart itself 
+	ex. of call: [aSlider name='myCoolSlider']
+		(note: <select id="myCoolSlider"> element needs to exists beforehand)
+*/
 function newSlider($data) {
 ?>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -411,7 +416,7 @@ function newSlider($data) {
 
 <div id="<?php echo $data['name'] ?>-slider"></div>
 <script>
-newSlider('<?php echo $data['name'] ?>'); // ,'minbeds-slider')
+newSlider('<?php echo $data['name'] ?>');
 </script>
 
 <?php
