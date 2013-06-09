@@ -44,7 +44,7 @@ function printArr(arr,dtype) {
 	return out;
 }
 
-function pickRow(i, data) {
+function pickRow(i, data, uniq) {
 
 	if (i == 'first')
 		i = 1;
@@ -52,6 +52,8 @@ function pickRow(i, data) {
 		i = data.length;
 	if (i>data.length)
 		i = data.length;
+	if (!uniq)
+		uniq = '';
 // console.info('pickRow!');
 	// Reading data from data's row
 	// Assuming that object is: { FOO, label1:value2, label2:value2, ... }
@@ -59,18 +61,20 @@ function pickRow(i, data) {
 	var out = new Array();
 	// var cells = (array) data[nro];
 	i--;
-	var labeled = 0;
+	var labeled = false;
 	for (var point in data[i])
 		if (labeled) {
 			var cell = new Object();
 			cell.label = point;
 			data[i][point] = data[i][point].replace( ',', '.' );
 			cell.value = data[i][point];
-			// ' "value":'+data[i][point];
 			// console.info(cell);
 			out.push(cell);
-		} else
+		} else {
 			labeled = true; // Skipping over 1st column of data
+			var setnow = ' <span style="color:gray">['+data[i][point]+']</span>';
+			$("#databutt"+uniq).append(setnow); // Writing its title into More data button
+		}
 	// console.info(out);
 	return out;
 }
@@ -149,7 +153,7 @@ if (column)
 if (args2js.datafile  && args2js.row) {
 	// Backup of (file's) input for later JS hooks
 	args2js.backup = args2js.data;
-	args2js.data = pickRow(args2js.row, args2js.data);
+	args2js.data = pickRow(args2js.row, args2js.data, args2js.uniq);
 	args2js.row = 0;
 } else if (args2js.datafile && args2js.column) {
 	// Backup of (file's) input for later JS hooks

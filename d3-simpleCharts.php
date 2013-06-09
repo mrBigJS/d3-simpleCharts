@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.25
+Version: 1.2.26
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -114,7 +114,9 @@ if ($logopos == "top") {
 
 $args2js['tooltips'] = testDef(0,$data['notooltips']); // Tooltips: active / not 
 
-$moredata = testDef(" More Data ",$data['moredata']); // Title's position & style <TD>
+$moredata = testDef(" More Data ",$data['moredata']); // Name of more data button
+$moretitle = testDef("Extend to other data sets.",$data['moredatatitle']); // Title of more data button
+
 $backstyle = testDef('',$data['backstyle']); // Chart's border & background style 
 $url = testDef('',$data['url']); // Url to further info on net
 
@@ -210,7 +212,9 @@ if (<?php echo $slider ?>==0) {  // Slider of time series showing out
 }
 
 var idX = "'<? echo $uniq ?>'";
-var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="Extend to other data sets."><?php echo $moredata ?></button>';
+// var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="Extend to other data sets." id="databutt<? echo $uniq ?>"><?php echo $moredata ?></button>';
+
+var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="<?php echo $moretitle ?>" id="databutt<? echo $uniq ?>"><?php echo $moredata ?></button>';
 
 if (<?php echo $switcher ?>==1) {  // No buttons: chart switcher 
 	butts = '';
