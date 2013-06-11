@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.2.26
+Version: 1.2.28
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -95,6 +95,10 @@ $args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
 // Coloring of chart objects, linear gradient color ends
 $args2js['startbar'] = testDef('',$data['startbar']); // Starting color 1st bar/slice of chart
 $args2js['endbar'] = testDef('',$data['endbar']); // Ending color of smooth gradient
+// Coloring of chart: fixed colors in array
+$args2js['colors'] = testDef('',$data['colors']);
+if ($args2js['colors'])
+	$args2js['colors'] = getArr($args2js['colors']);
 
 $args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
 $main = $args2js['title']; // Major title
@@ -115,7 +119,7 @@ if ($logopos == "top") {
 $args2js['tooltips'] = testDef(0,$data['notooltips']); // Tooltips: active / not 
 
 $moredata = testDef(" More Data ",$data['moredata']); // Name of more data button
-$moretitle = testDef("Extend to other data sets.",$data['moredatatitle']); // Title of more data button
+$moretitle = testDef("Extend to other data sets",$data['moredatatitle']); // Title of more data button
 
 $backstyle = testDef('',$data['backstyle']); // Chart's border & background style 
 $url = testDef('',$data['url']); // Url to further info on net
@@ -169,6 +173,8 @@ else
 
 // <link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/d3chart.css" />
 ?>
+<!-- Start of d3 simpleCharts -->
+
 <script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
 
 <script>
@@ -212,7 +218,6 @@ if (<?php echo $slider ?>==0) {  // Slider of time series showing out
 }
 
 var idX = "'<? echo $uniq ?>'";
-// var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="Extend to other data sets." id="databutt<? echo $uniq ?>"><?php echo $moredata ?></button>';
 
 var otherbutt = ' <button '+fontx+' onclick="extendData(d3charts['+last_chart+'],'+last_chart+','+slider+','+idX+')" title="<?php echo $moretitle ?>" id="databutt<? echo $uniq ?>"><?php echo $moredata ?></button>';
 
@@ -244,7 +249,7 @@ var cssfile = "'<?php echo $cssfile ?>'";
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
 var rootp = 'wp-content/plugins/d3-simpleCharts/';
 // console.info(logofile);
-var newwin = ' <button style="cursor:pointer" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
+var newwin = ' <button style="cursor:pointer" title="Open Chart into New Window" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
 var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr><tr><td>.</td></tr>'; // TODO
 var sortbutt = '<select '+fontx+' id="xsort" onchange="sort('+last_chart+')"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
@@ -293,10 +298,7 @@ if (<?php echo $exportsvg ?>==1) {
 
 html = html + '<tr><td id="'+ chartid + 'odata" ' + title + ' style=" float:right;">'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
-/* OLD
-document.write(html); // This prints out chart (now at top of each WP page/post)
-newChart(d3charts[last_chart]);
-*/
+
 d3charts[d3charts.length-1].html = html;
 
 if (d3charts[last_chart].chartid) { // chart has its container by user's input (needs JQuery, sorry)
@@ -321,9 +323,11 @@ if (typeof chartQ == 'undefined')
 }
 
 </script>
+
+<!-- End of d3 simpleCharts -->
 <?php
 };
-// Being tolerant for user's typos
+// Being tolerant for user's normal typos
 add_shortcode("simpleCharts", "simpleBarsDev");
 add_shortcode("SimpleCharts", "simpleBarsDev");
 add_shortcode("simplecharts", "simpleBarsDev");
@@ -352,9 +356,11 @@ function testDef($setupV, $userV) {
 	Generating CSS elements automatically from user's provided JSON data
  	+ printing this into its own style section on WP pages before actual new chart.
 	
-	Returnin unique id number for each new chart & its data set.
+	Returning unique id number for each new chart & its data set.
 
-	Abit tricky function - sorry.
+	Abit tricky function.
+
+	NOT supported anymore - use style file 'd3chart.css' & standard CSS rules.
 */
 function styleBars($data) {
 
@@ -407,7 +413,7 @@ function getArr($array) {
 	return explode(',',$array);  // cells must be separated by ',' letter 
 }
 
-/* A small API function for creating slider on any WP page/post - NOT called from simpleChart itself 
+/* A small API function for testing slider on any WP page/post - NOT called from simpleChart itself 
 	ex. of call: [aSlider name='myCoolSlider']
 		(note: <select id="myCoolSlider"> element needs to exists beforehand)
 */

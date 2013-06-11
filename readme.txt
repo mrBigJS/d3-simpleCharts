@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.26
+Stable tag: 1.2.28
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,7 +103,7 @@ Two WP standard ways to install the package.
 1. Write 'd3' to the search box + Search PlugIns.
 1. Select 'Install Now' under the result of 'd3-simpleCharts'.
 1. Activate the PlugIn on WordPress after its download.
-1. Start to use & enjoy shortnotes '[simpleChart]' inside your posts & pages.
+1. Start to use & enjoy shortnotes '[simpleChart]' with its options inside your posts & pages.
 
 Or you may want to do it 'old traditional way'.
 
@@ -157,6 +157,8 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 
 *Very Good Further Links*
 
+* [d3 simpleCharts](https://github.com/mrBigJS/d3-simpleCharts/wiki/Introduction
+            "Examples and full documentation of all options to use together with d3 simpleCharts.")
 * [D3, All Galleries](https://github.com/mbostock/d3/wiki/Gallery
             "Fancy, impressive & professional charts that should inspire you to jump in.")
 * [Chart's SVG standard](http://www.w3schools.com/svg/svg_reference.asp
@@ -181,6 +183,14 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.2.28 =
+Version 1.2.28 - 
+Let there be colors... and there was: introducing an option 'colors' to set your favorite colors of chart's segments. Wiki's doc is updated for this exciting feature too on Github.
+
+= 1.2.27 =
+Version 1.2.27 - 
+Fixing in 'Bars' chart type the lowest value scaling issue. More Data button is hidden by default if there is no 2x2 data set.
 
 = 1.2.26 =
 Version 1.2.26 - 

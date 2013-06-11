@@ -130,8 +130,11 @@ if (args2js.data.length == 0) {
 		args2js.data = data;
 		drawChart(args2js);
 	});
-} else // data is coming via shortcode directly
+} else { // data is coming via shortcode directly
 	drawChart(args2js);
+	$('#databutt'+args2js.uniq).empty(); // Remove more data butt from UI
+	$('#databutt'+args2js.uniq).attr('title','');
+	}
 }
 
 /*
@@ -179,9 +182,8 @@ if (args2js.datafile  && args2js.row) {
 		args2js.chart = ctype;
 
 	// Attach interpolated color ramp to chart's bars/columns/etc, if asked
-	if (args2js.startbar && args2js.endbar)
+	if (args2js.startbar && args2js.endbar && !args2js.colors && args2js.colors.length != args2js.data.length)
 		args2js.colors = getColorRamp(args2js.startbar, args2js.data.length, args2js.endbar);
-	// console.info(args2js);
 
 	// Emptying chart's container at first
 	$('#chart'+args2js.uniq).empty();
@@ -191,21 +193,7 @@ if (args2js.datafile  && args2js.row) {
 
 	if (!args2js.tooltips) // Tooltips active?
 		createTooltip();
-/*
-	var data = args2js.data;  // Taking data out (why?)
-	if (args2js.chart == 'columns')
-		simpleCols(data,args2js)
-	else if (args2js.chart == 'bars')
-		simpleBars(data,args2js);
-	else if (args2js.chart == 'area')
-		simpleArea(data,args2js);
-	else if (args2js.chart == 'pie')
-		simplePie(data,args2js)
-	else if (args2js.chart == 'line')
-		line(data,args2js)
-	else
-		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
-*/
+
 	if (args2js.chart == 'columns')
 		simpleCols(args2js)
 	else if (args2js.chart == 'bars')
@@ -216,8 +204,10 @@ if (args2js.datafile  && args2js.row) {
 		simplePie(args2js)
 	else if (args2js.chart == 'line')
 		line(args2js)
-	else
+	else {
 		console.error('No legal chart type given in shortcode, choices are: "area", "columns", "bars", "line", and "pie".');
+		args2js.chart = 'columns'; // Showing default chart anyway
+	}
 }
 /*
 	extendData
@@ -474,9 +464,9 @@ x0 = parseFloat(x0);
 min = 0;
 if (args2js['minrange'])
 	min = args2js['minrange'];
- 
+
 var x = d3.scale.linear()
-    .domain([-x0, x0])
+    .domain([min, x0])
     .range([0, width])
     .nice();
 if (allpos)  // All input data points > 0 
