@@ -1262,6 +1262,57 @@ $( "#"+selectID ).change(function() {
 
 }
 
+// JS API interface for simpleCharts
+function simpleChart(indata,noplaceholder) {
+
+		var chartid = Math.floor((Math.random()*10000)+1);;
+		var args2jsX = new Object();
+
+		// All defaults to make a chart appear
+		args2jsX.caption = '';
+		args2jsX.chart = 'columns';
+		args2jsX.chartid = chartid;
+		args2jsX.colors = '';
+		args2jsX.column = '';
+		args2jsX.data = new Array();
+		args2jsX.endbar = '';
+		args2jsX.format = '';
+		args2jsX.chartid = '+00.02';
+		args2jsX.height = '240';
+		args2jsX.margin = new Object({'bottom':30, 'left':70, 'right':20, 'top':20});
+		args2jsX.maxrange = 0;
+		args2jsX.minrange = 0;
+		args2jsX.row = '1';
+		args2jsX.sort = '';
+		args2jsX.startbar = '';
+		args2jsX.ticks = 10;
+		args2jsX.title = '';
+		args2jsX.tooltips = 0;
+		args2jsX.uniq = chartid;
+		args2jsX.width = '320';
+		args2jsX.xtitle = '';
+		args2jsX.ytitle = '';
+
+	// Overwriting defaults by user input
+	for (var key in indata) {
+	if (indata.hasOwnProperty(key)) {
+		// console.info(key + " -> " + indata[key]);
+		if (key != "values" && key != "labels")
+			args2jsX[key] = indata[key];
+	} }
+	// Composing input data recs
+	for (i=0; i<indata.values.length; i++)
+		args2jsX.data.push( new Object({"label":indata.labels[i],"value":indata.values[i]}) );
+
+	console.info(args2jsX);
+	var container = '<div id="'+chartid+'"><table class="svgtable" id="table'+chartid+'"><tr><td style="text-align:center" class="titletext">'+args2jsX.title+'</td></tr><tr><td><div id="chart'+chartid+'">'+chartid+'</div></td></tr></table></div>';
+
+	if (!noplaceholder) // There is container by user's wish existing
+		document.write(container);
+
+	drawChart(args2jsX);
+}
+
 // TODO: embedding link
 function showembed(chartid) {
 

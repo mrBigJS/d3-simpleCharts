@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.2.28
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,14 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.3.1 =
+Version 1.3.1 - 
+Adding option of "not to generate place holder" on JavaScript API. Also, Wiki's doc updated.
+
+= 1.3.0 =
+Version 1.3.0 - 
+Introducing support of JavaScript API from any WordPress page/post or from your own JS app. Very basic Wiki's doc on Github available.
 
 = 1.2.28 =
 Version 1.2.28 - 
