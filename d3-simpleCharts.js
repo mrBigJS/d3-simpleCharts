@@ -99,6 +99,8 @@ function abcSort(a,b) { // custom sort (asc.)
 */
 function newChart(args2js) {
 
+console.info(args2js);
+
 if (args2js.data.length == 0) {
 
 	// External data file
@@ -126,7 +128,7 @@ if (args2js.data.length == 0) {
 	d3.xml(datafile, function(error, data) {
 		// console.info(data);
 		// d3doc = data;
-		return;  // NOT working yet: TODO NEXT ...
+		return;  // NOT working yet: TODO
 		args2js.data = data;
 		drawChart(args2js);
 	});
@@ -1304,7 +1306,7 @@ function simpleChart(indata,noplaceholder) {
 	for (i=0; i<indata.values.length; i++)
 		args2jsX.data.push( new Object({"label":indata.labels[i],"value":indata.values[i]}) );
 
-	console.info(args2jsX);
+	// console.info(args2jsX);
 	var container = '<div id="'+chartid+'"><table class="svgtable" id="table'+chartid+'"><tr><td style="text-align:center" class="titletext">'+args2jsX.title+'</td></tr><tr><td><div id="chart'+chartid+'">'+chartid+'</div></td></tr></table></div>';
 
 	if (!noplaceholder) // There is container by user's wish existing

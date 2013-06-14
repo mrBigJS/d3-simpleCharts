@@ -3,7 +3,7 @@
 Plugin Name: d3 simpleCharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.3.1
+Version: 1.3.2
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -100,7 +100,7 @@ $args2js['colors'] = testDef('',$data['colors']);
 if ($args2js['colors'])
 	$args2js['colors'] = getArr($args2js['colors']);
 
-$args2js['title'] = testDef('',$data['mtitle']); // MAJOR TITLE
+$args2js['title'] = testDef('',$data['mtitle']) . testDef('',$data['maintitle']); // MAJOR TITLE of chart
 $main = $args2js['title']; // Major title
 
 $args2js['caption'] = testDef('',$data['caption']); // Longer desc info below chart
@@ -127,7 +127,7 @@ $url = testDef('',$data['url']); // Url to further info on net
 if ($url)  // URL to external page linked to chart
 	$url = ' href="' . $url . '" ';
 
-$title = testDef('',$data['title']); // Longer pop-up description for user when cursor mover over chart
+$title = testDef('',$data['title']) . testDef('',$data['popuptitle']); // Longer pop-up description for user when cursor mover over chart
 if ($title)
 	$title = ' title="' . $title . '" ';
 /*
@@ -401,7 +401,7 @@ return $uniq;
 /*
 	getArr
 	------
-	Parsing user's str arrays (eq data's values & labels) -> real php array object
+	Parsing user's str arrays (eq data's values, labels & colors) -> real php array object
 		an input format: "(a,b,c)"
 		the output: array("a","b","c")
 */
@@ -409,7 +409,16 @@ function getArr($array) {
 
 	$array = str_replace('(', '',$array);
 	$array = str_replace(')', '',$array);
-	$array = str_replace(', ', ',',$array);
+	$array = str_replace('"', '',$array);
+	$array = str_replace("'", "",$array);
+	// $array = str_replace('-', '_',$array);
+	$array = str_replace(', ', ',',$array); // space X 3
+	$array = str_replace(', ', ',',$array); // space
+	$array = str_replace(', ', ',',$array); // space
+	$array = str_replace(',	', ',',$array); // tab X 3
+	$array = str_replace(',	', ',',$array); // tab
+	$array = str_replace(',	', ',',$array); // tab
+	// $array = str_replace(' ', '_',$array);
 	return explode(',',$array);  // cells must be separated by ',' letter 
 }
 

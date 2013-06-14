@@ -4,7 +4,7 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,10 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 9. Shows how basic 'Area' looks out together with home's pets example (old UI).
 
 == Changelog ==
+
+= 1.3.2 =
+Version 1.3.2 - 
+Making options 'labels', 'colors', 'values' input more tolerant for some common user's typos. Main title has option can be also called 'maintitle' and chart's popup text 'popuptitle' from now on.
 
 = 1.3.1 =
 Version 1.3.1 - 
