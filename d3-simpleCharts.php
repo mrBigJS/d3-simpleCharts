@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: d3 simpleCharts
-Plugin URI: http://wordpress.org/extend/plugins/d3-simpleCharts/
+Plugin Name: d3 simplecharts
+Plugin URI: http://wordpress.org/extend/plugins/d3-simplecharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.3.2
+Version: 1.3.3
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -35,7 +35,7 @@ $args2js["debug"] = '';
 // External CSS style file name
 $cssfile = testDef("d3chart.css",$data['cssfile']);
 if ($cssfile)
-	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/'. $cssfile .'" />';
+	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simplecharts/'. $cssfile .'" />';
 
 // Unique ID name for each new chart +
 // generate all custom tailored CSS to independent graph
@@ -159,7 +159,7 @@ if ($jquery)
 if ($cdn)
 	echo '<script src="http://d3js.org/d3.v3.min.js"></script>';
 else
-	echo '<script src="wp-content/plugins/d3-simpleCharts/d3.v3.min.js"></script>';
+	echo '<script src="wp-content/plugins/d3-simplecharts/d3.v3.min.js"></script>';
 
 // Including our core JavaScript lib
 /*
@@ -167,15 +167,15 @@ else
 <script src="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.min.js"></script>
 */
 // if ($data['chart'] == 'line') {
-	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.css" />';
-	echo '<script src="wp-content/plugins/d3-simpleCharts/rickshaw/rickshaw.min.js"></script>';
+	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simplecharts/rickshaw/rickshaw.min.css" />';
+	echo '<script src="wp-content/plugins/d3-simplecharts/rickshaw/rickshaw.min.js"></script>';
 // }
 
 // <link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/d3chart.css" />
 ?>
 <!-- Start of d3 simpleCharts -->
 
-<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
+<script src="wp-content/plugins/d3-simplecharts/d3-simpleCharts.js"></script>
 
 <script>
 
@@ -197,7 +197,7 @@ if (typeof d3charts == 'undefined')
 // d3charts[args2js.title] = args2js;
 d3charts.push(args2js);
 
-var rootp = 'wp-content/plugins/d3-simpleCharts/icons/';
+var rootp = 'wp-content/plugins/d3-simplecharts/icons/';
 
 // All existing chart types & their names
 var ctype = ["'columns'","'bars'","'area'","'line'","'pie'"];
@@ -230,7 +230,7 @@ if (<?php echo $series ?>==1) {  // No buttons: more data
 
 // Embed link element
 var cid = 'chart<? echo $uniq ?>';
-var url2 = 'wp-content/plugins/d3-simpleCharts/embed.php';  // encodeURIComponent(el.innerText)
+var url2 = 'wp-content/plugins/d3-simplecharts/embed.php';  // encodeURIComponent(el.innerText)
 // var cid2 = "'"+cid+"'";
 var cid2 = "'<? echo $uniq ?>'"; 
 
@@ -247,7 +247,7 @@ var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 var cssfile = "'<?php echo $cssfile ?>'";
 
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
-var rootp = 'wp-content/plugins/d3-simpleCharts/';
+var rootp = 'wp-content/plugins/d3-simplecharts/';
 // console.info(logofile);
 var newwin = ' <button style="cursor:pointer" title="Open Chart into New Window" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
 
@@ -431,7 +431,7 @@ function newSlider($data) {
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>
+<script src="wp-content/plugins/d3-simplecharts/d3-simpleCharts.js"></script>
 
 <div id="<?php echo $data['name'] ?>-slider"></div>
 <script>

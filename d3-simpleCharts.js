@@ -1082,12 +1082,12 @@ function getColorRamp(startColor, steps, endColor) {
 	// var svg = '<svg height="100%" width="100%">' + $('.'+svgid).html() + '</svg>';
 	var svg = $('#chart'+svgid).html();
 	// Include files
-	var jquery = "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>";
+	var jquery = "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>"; 
 	if (css)
-		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simpleCharts/'+css+'" type="text/css" media="all"/> ';
+		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simplecharts/'+css+'" type="text/css" media="all"/> ';
 	else
 		css = '';
-	css = '<script src="wp-content/plugins/d3-simpleCharts/d3-simpleCharts.js"></script>' + jquery + css;
+	css = '<script src="wp-content/plugins/d3-simplecharts/d3-simpleCharts.js"></script>' + jquery + css;
 
 	if (logoUrl)
 		logoUrl = '<img src="'+logoUrl+'">';
