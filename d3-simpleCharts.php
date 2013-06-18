@@ -3,7 +3,7 @@
 Plugin Name: d3 simplecharts
 Plugin URI: http://wordpress.org/extend/plugins/d3-simplecharts/
 Description: d3 simpleCharts gives you easy and direct access to all powerfull d3.js library's state-of-art vector based charts (SVG, vector graphics). You can use four basic graph types and customize their appearence & layout just the way you prefer by applying CSS attributes & elements of HTML5.
-Version: 1.3.3
+Version: 1.3.7
 Author: Jouni Santara
 Organisation: TERE-tech ltd
 Author URI: http://www.linkedin.com/in/santara
@@ -30,12 +30,18 @@ License: GPL2
 */
 function simpleBarsDev($data) {
 
-$args2js["debug"] = ''; 
+$args2js = array();
+
+// Plugin root directory
+$args2js["root"] = plugins_url( '/' , __FILE__ );
+
+// $args2js["debug"] = ''; 
 
 // External CSS style file name
 $cssfile = testDef("d3chart.css",$data['cssfile']);
 if ($cssfile)
-	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simplecharts/'. $cssfile .'" />';
+	echo '<link rel="stylesheet" type="text/css" href="' . plugins_url( $cssfile , __FILE__ ) . '" />';
+$args2js["cssfile"] = $cssfile;
 
 // Unique ID name for each new chart +
 // generate all custom tailored CSS to independent graph
@@ -62,20 +68,22 @@ foreach(array_keys($labels) as $i) {
 // echo json_encode($points2);
 // var_dump(json_decode($points));
 
-// All options from php shortcode call to php args array
-$args2js = array();
-
-// All 'X' labels inside $data['X'] are available & active
+// All options from php shortcode call to php args array & JavaScript
+// All 'X' labels inside $data['X'] are available & active options of shortcode
 
 $args2js["uniq"] = $uniq; // Unique ID of this new chart
-$args2js["chartid"] = $data["chartid"]; // user's own container ID 
+$args2js["chartid"] = $data["chartid"]; // user's own container ID
 
-$args2js["data"] = $points2; // Data set: labels & values in JSON array
+$args2js["data"] = $points2; // Input Data: labels & values in JSON array
 
 $args2js["chart"] = strtolower(testDef("columns",$data['chart'])); // Asked basic chart type or its default: Columns
+if ($args2js["chart"] == 'column' || $args2js["chart"] == 'bar')
+	$args2js["chart"] = $args2js["chart"] . 's';
 
-$args2js["xtitle"] = testDef("X-labels",$data['xtitle']); // Minor x-title
-$args2js["ytitle"] = testDef("Y-values",$data['ytitle']); // Minor y-title
+$args2js["xtitle"] = testDef("",$data['xtitle']); // Minor x-title
+$args2js["ytitle"] = testDef("",$data['ytitle']); // Minor y-title
+
+$args2js["xrotate"] = testDef(0,$data['xrotate']); // Rotating labels on axis of Columns chart
 
 $args2js["datafile"] = testDef("",$data['datafile']); // Source of external file for data set
 $args2js['row'] = testDef('1',$data['row']); // Row of chosen data from multidimension input file
@@ -84,10 +92,12 @@ $args2js['column'] = testDef('',$data['column']); // Column of chosen data from 
 $args2js['sort'] = strtolower(testDef('',$data['sort'])); // Sorting of data values (123/321)
 
 $args2js["format"] = testDef("+00.02",$data['format']); // How to format & show numeric axis (except: line chart)
+
 $args2js["width"] = testDef(640,$data['width']); // Width of final chart on post or page (default: VGA)
 $args2js["height"] = testDef(480,$data['height']); // Height of final chart
-$args2js["margin"] = testDef(json_decode('{"top": 20, "right": 20, "bottom": 30, "left": 70}'),json_decode($data['margin'])); // How much space around chart for the axis titles & values
-$args2js["ticks"] = testDef(10,$data['ticks']); // If there is horizontal or vertical ticks inside columns or bars
+
+$args2js["margin"] = testDef(json_decode('{"top": 20, "right": 20, "bottom": 30, "left": 70}'),json_decode($data['margin'])); // Space around chart for the axis titles & values
+$args2js["ticks"] = testDef(10,$data['ticks']); // Horizontal or vertical ticks for columns or bars
 
 $args2js["minrange"] = testDef(0,$data['minrange']); // Starting value for linear axis of values
 $args2js["maxrange"] = testDef(0,$data['maxrange']); // Ending value
@@ -101,12 +111,12 @@ if ($args2js['colors'])
 	$args2js['colors'] = getArr($args2js['colors']);
 
 $args2js['title'] = testDef('',$data['mtitle']) . testDef('',$data['maintitle']); // MAJOR TITLE of chart
-$main = $args2js['title']; // Major title
+$main = $args2js['title'];
 
 $args2js['caption'] = testDef('',$data['caption']); // Longer desc info below chart
 
 $mstyle = testDef("",$data['mstyle']); // Title's position & style (for <TD>)
-$logo = testDef("",$data['logo']); // Possible url of logo (eq company symbol, etc)
+$logo = testDef("",$data['logo']); // Possible url of logo (eq company/org/society symbol, etc)
 
 if (strlen($logo))
 	$logo = ' <img src="' . $logo . '"> ';
@@ -116,7 +126,7 @@ if ($logopos == "top") {
 	$logo = '';
 }
 
-$args2js['tooltips'] = testDef(0,$data['notooltips']); // Tooltips: active / not 
+$args2js['tooltips'] = testDef(0,$data['notooltips']); // Tooltips 4 bars: active / not 
 
 $moredata = testDef(" More Data ",$data['moredata']); // Name of more data button
 $moretitle = testDef("Extend to other data sets",$data['moredatatitle']); // Title of more data button
@@ -130,11 +140,6 @@ if ($url)  // URL to external page linked to chart
 $title = testDef('',$data['title']) . testDef('',$data['popuptitle']); // Longer pop-up description for user when cursor mover over chart
 if ($title)
 	$title = ' title="' . $title . '" ';
-/*
-TODO/test: User defines one's own container id => chart could be anywhere on page/post where shortcode is called, clumsy
-if ($data['id'])
-	$args2js['id'] = $data['id'];
-*/
 
 // Some config flags about buttons on layout: visible or not (def: yes)
 $switcher = testDef(0,$data['noswitcher']); // No chart type switcher buttons
@@ -162,10 +167,7 @@ else
 	echo '<script src="wp-content/plugins/d3-simplecharts/d3.v3.min.js"></script>';
 
 // Including our core JavaScript lib
-/*
-<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.css" />
-<script src="wp-content/plugins/d3-simpleCharts/nvd3/nv.d3.min.js"></script>
-*/
+
 // if ($data['chart'] == 'line') {
 	echo '<link rel="stylesheet" type="text/css" href="wp-content/plugins/d3-simplecharts/rickshaw/rickshaw.min.css" />';
 	echo '<script src="wp-content/plugins/d3-simplecharts/rickshaw/rickshaw.min.js"></script>';
@@ -197,7 +199,7 @@ if (typeof d3charts == 'undefined')
 // d3charts[args2js.title] = args2js;
 d3charts.push(args2js);
 
-var rootp = 'wp-content/plugins/d3-simplecharts/icons/';
+var rootp = '<?php echo plugins_url( 'icons/' , __FILE__ )?>'
 
 // All existing chart types & their names
 var ctype = ["'columns'","'bars'","'area'","'line'","'pie'"];
@@ -205,12 +207,12 @@ var cicons = ["columns.png","bars.png","area.png","line.png","pie.png"];
 // Referring to just now added one for creating its buttons
 var last_chart = d3charts.length-1;
 var fontx = ' style="font-size:xx-small; cursor:pointer;" ';
-var butts = '<span class="buttons">';
+var butts = '';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[0]+')"> <img src="'+rootp+cicons[0]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[1]+')"> <img src="'+rootp+cicons[1]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[2]+')"> <img src="'+rootp+cicons[2]+'"></button>';
 butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[3]+')"> <img src="'+rootp+cicons[3]+'"> </button>';
-butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[4]+')"> <img src="'+rootp+cicons[4]+'"> </button></span>';
+butts += ' <button '+fontx+'onclick="drawChart(d3charts['+last_chart+'],'+ctype[4]+')"> <img src="'+rootp+cicons[4]+'"> </button>';
 
 var slider = 0;
 if (<?php echo $slider ?>==0) {  // Slider of time series showing out
@@ -230,7 +232,7 @@ if (<?php echo $series ?>==1) {  // No buttons: more data
 
 // Embed link element
 var cid = 'chart<? echo $uniq ?>';
-var url2 = 'wp-content/plugins/d3-simplecharts/embed.php';  // encodeURIComponent(el.innerText)
+var url2 = '<?php echo plugins_url( 'embed.php' , __FILE__ )?>';  // encodeURIComponent(el.innerText)
 // var cid2 = "'"+cid+"'";
 var cid2 = "'<? echo $uniq ?>'"; 
 
@@ -247,11 +249,10 @@ var logofile = '<?php echo testDef("",$data["logo"]) ?>';
 var cssfile = "'<?php echo $cssfile ?>'";
 
 // var newwin = ' <a onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)">new window</a> ';
-var rootp = 'wp-content/plugins/d3-simplecharts/';
 // console.info(logofile);
-var newwin = ' <button style="cursor:pointer" title="Open Chart into New Window" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img src="'+rootp+'icons/newindow.jpg"></button> ';
+var newwin = ' <a style="cursor:pointer" title="Open Chart into New Window" onclick="svgWin('+cid2+','+logofile+','+cssfile+',args2js)"><img width="15" height="15" src="'+args2js.root+'icons/newindow.jpg"></a> ';
 
-var embed = '<tr><td></td><td style="text-align:right"><sub>'+elink+newwin+'</sub></td><tr><tr><td>.</td></tr>'; // TODO
+var embed = '<tr><td style="text-align:right"><span class="actbox">'+elink+newwin+'</span></td></tr>'; // TODO
 var sortbutt = '<select '+fontx+' id="xsort" onchange="sort('+last_chart+')"><option value="">Sort</option><option value="abc">1-2-3</option><option value="cba">3-2-1</option></select>';
 
 // Our chart container in HTML is <table> element with custom styles for new chart
@@ -259,11 +260,15 @@ var html = '<br /><br /><table id= "'+ tableid +'" class="svgtable" style="<?php
 // if ('<? echo $embed ?>')
 	html = html+embed;
 
-// butts
-html = html + '<tr><td>'+butts+'</td></tr>';
+// butts group
+/*
+html = html + '<tr class="noteitem"><td>'+butts+'</td></tr>';
 html = html + '<tr><td id="extras" class="buttons">'+otherbutt+'</td><td class="buttons">'+sortbutt+'</td></tr>';
+*/
+html = html + '<tr><td style="text-align:right"><span class="actbox">'+butts+'</span>';
+html = html + '<br /><span class="actbox">'+sortbutt+'<span id="extras">'+otherbutt+'</span></span></td></tr>';
 
-html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>"><br /> <h3><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title + its logo
+html = html + '<tr><td class="titletext" style="<?php echo $mstyle ?>"><br /> <h3 class="titletext"><?php echo $main ?></h3><?php echo $logo_top ?></td></tr>'; // Main title + its logo
 
 var chartX = '<div style="" id="'+ chartid + '"></div>';
 if (url) // Here is row where D3 draws its chart - finally
@@ -287,16 +292,16 @@ var odataButt2 = '';
 if (<?php echo $export ?>==0) {
 
 // Data export buttons
-var odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data for Copy & Paste to big data applications."> BIG DATA </button>';
-var odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data for Copy & Paste to Excel here."> Excel data </button>';
+var odataButt = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+')" title="Open chart\'s data to another big data application."> BIG DATA </button>';
+var odataButt2 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart\'s data to Excel here or save it into text file."> Excel data </button>';
 var odataButt3 = '';
 if (<?php echo $exportsvg ?>==1) {
 	odform="'svg'";
-	odataButt3 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+', cid)" title="Open chart\'s html for Copy & Paste to web page here."> Chart </button>';
+	odataButt3 = ' <button '+fontx+' onclick="openData(d3charts['+last_chart+'], '+id+', '+odform+')" title="Open chart to any SVG accepting graphics editor or save it locally into a file."> Save Chart </button>';
 }
 }
 
-html = html + '<tr><td id="'+ chartid + 'odata" ' + title + ' style=" float:right;">'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
+html = html + '<tr><td class="actbox" id="'+ chartid + 'odata" ' + title + ' style=" float:right;">'+odataButt3+odataButt+odataButt2+'</td></tr>'+cc; 
 html = html + '</table>';
 
 d3charts[d3charts.length-1].html = html;

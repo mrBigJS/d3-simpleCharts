@@ -1,8 +1,24 @@
-function openData(args2js,id,format,svgid) {
+function openData(args2js,id,format) {
 
 	var bdid = id+'_bdme';
-	var html = '<div id="'+bdid+'" class="noteitem">';
-	html += '<button style="float:right" title="Close data area." onclick="removeMe(\''+bdid+'\')"> [X] </button><br />';
+	var html = '<div id="'+bdid+'" class="actbox">';
+	html += '<button style="float:right; font-size:xx-small" title="Close data box." onclick="removeMe(\''+bdid+'\')"> [X] </button><br />';
+
+	// Building temp chart download name (up to 100 for each uniq ID of chart on tmp)
+	var filename = 'chart' + args2js.uniq+'_'+Math.floor((Math.random()*100)+1);	
+	
+	// Basic format of data
+	var ext = format;
+	if (ext == 'table')
+		ext = 'tsv';
+	if (!ext)
+		ext = 'json';
+
+	// Download link
+	var icon = '<img src="'+args2js.root+'icons/disk.gif'+'" />';
+	var link = '<button title="Download now!"><a href="'+args2js.root+'tmp/'+filename+'.'+ext+'">'+icon+'</a></button>';
+
+	var query = args2js.root+'downloadfile.php';
 
 	var data = args2js.data;
 	if (format == 'tsv') {
@@ -18,13 +34,49 @@ function openData(args2js,id,format,svgid) {
 		var values = new Array();
 		for (i=0; i<data.length; i++) {
 			labels.push(data[i].label);
-			values.push(data[i].value);
+			values.push(data[i].value); 
 		}
-		html += '<b>Excel data table</b><table style="width:90%; color:navy; border:1px"><thead style="font-weight:bold">' + printArr(labels,1) +'</thead><tbody>'+ printArr(values,1) + '</tbody></table>';
+		html += '<span class="exporttitle">Excel table</span><table class="exportexcel"><thead class="exportheading">' + printArr(labels,1) +'</thead><tbody>'+ printArr(values,1) + '</tbody></table>';
+		html += '<span class="exportsave"><br />OPEN data to Excel (/etc) or save it: ' + link + '</span>';
+
+		var datatsv = printArr(labels)+'\t\n'+printArr(values);
+		$.post(query, { fname: filename, svg: datatsv, type:"tsv" })
+			.done(function() {
+				// console.info('download ready!');	
+		});
+		
 	} else if(format == 'svg') {
-		html += '<b>Chart in HTML</b><br />'+$('#'+svgid).html().replace(/</g,"&lt;").replace(/>/g,"&gt;");  // &lt; &gt;
-	} else
-		html += JSON.stringify(data).replace(/{/g," <br />{");
+		// html += '<b>Chart in HTML</b><br />'+$('#'+id).html().replace(/</g,"&lt;").replace(/>/g,"&gt;");  // &lt; &gt;
+		// var svgX = $('#'+id).html();  // Fetch chart's all svg
+		var svgX = document.getElementById(id).innerHTML;  // Fetch chart's all svg
+		// console.info(svgX);
+		// console.info(id);
+
+		html += '<span class="exportsave">OPEN the chart to your SVG editor/browser or save it: ' + link +'</span>';
+
+		args2js.cssfile = '';
+		$.post(query, { fname: filename, svg: svgX, type: "svg", cssfile: args2js.cssfile })
+			.done(function() {
+				// console.info('download ready!');	
+		});
+		// console.info(query);
+	} else {
+		var jdata = ' "points":' + JSON.stringify(data); // 'data = ' + 
+		if (args2js.ytitle)
+			jdata = '"ytitle":"'+ args2js.ytitle +'", '+jdata;
+		if (args2js.xtitle)
+			jdata = '"xtitle":"'+ args2js.xtitle +'", '+jdata;
+		if (args2js.title)
+			jdata = '"title":"'+ args2js.title +'", '+jdata;
+		jdata = 'data = { ' + jdata + ' }';
+		html += '<div class="exportjson">' + jdata.replace(/, /g,", <br />").replace(/},/g,"},<br />") + '</div>';
+		html += '<span class="exportsave"><br />OPEN or SAVE the big data (JSON): ' + link + '</span>';
+
+		$.post(query, { fname: filename, svg: jdata, type:ext })
+			.done(function() {
+				// console.info('download ready!');	
+		});
+	}
 
 	html += '</div>';
 	$('#'+id).append(html);
@@ -99,7 +151,7 @@ function abcSort(a,b) { // custom sort (asc.)
 */
 function newChart(args2js) {
 
-console.info(args2js);
+// console.info(args2js);
 
 if (args2js.data.length == 0) {
 
@@ -360,6 +412,7 @@ if (args2js['maxrange'])
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
+	  // .attr("transform", "rotate(-10)")
       .call(xAxis)
 	.append("text")
       .attr("x", Math.round(width/2)) 
@@ -368,6 +421,11 @@ if (args2js['maxrange'])
   	  .attr("class", "xtitle axis")
       .style("text-anchor", "end")
       .text(args2js.xtitle); 
+
+// Rotating labels
+if (args2js.xrotate)
+	svg.selectAll(".x .tick text")
+		.attr("transform", "rotate("+args2js.xrotate+")");
 
 // Setting up Y axis + its title
   svg.append("g")
@@ -1075,7 +1133,7 @@ function getColorRamp(startColor, steps, endColor) {
 	return colors;
 }
 
-// A function to show SVG element into new window
+// A function to show SVG element in a new window
   function svgWin( svgid, logoUrl, css, args2js ) {
 
 	var header = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> ';
@@ -1084,10 +1142,10 @@ function getColorRamp(startColor, steps, endColor) {
 	// Include files
 	var jquery = "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>"; 
 	if (css)
-		css = '<link rel="stylesheet" href="wp-content/plugins/d3-simplecharts/'+css+'" type="text/css" media="all"/> ';
+		css = '<link rel="stylesheet" href="'+args2js.root+css+'" type="text/css" media="all"/> ';
 	else
 		css = '';
-	css = '<script src="wp-content/plugins/d3-simplecharts/d3-simpleCharts.js"></script>' + jquery + css;
+	css = '<script src="'+args2js.root+'d3-simpleCharts.js"></script>' + jquery + css;
 
 	if (logoUrl)
 		logoUrl = '<img src="'+logoUrl+'">';
@@ -1096,16 +1154,19 @@ function getColorRamp(startColor, steps, endColor) {
 	var biggerB = '<button style="font-size:xx-small" onClick="svgsize('+svgid+',+0.1)"> » </button> ';
 	var printB = '<button style="float:right" onClick="window.print()">Print Chart</button> ';
 
-	var html = header+' <html><head><title>Chart('+args2js.chart+'): '+args2js.title+'</title>'+css+'</head> ';
-	html = html + '<body><div style="float:right"> '+logoUrl+'</div><h3 class="titletext">'+args2js.title+'</h3>';
-	html = html + '<table><tr><td>';
-	html = html + '<p style="float:right">' + smallerB + biggerB + '</p>';
-	html = html + '</td></tr><tr><td>';
+	var html = header+' <html><head><title> '+args2js.title+' - Chart, '+args2js.chart+' </title>'+css+'</head> ';
+	html = html + '<body>';
+	html = html + '<table class="svgtable">';
+	if (logoUrl)
+		html = html + '<tr><td></td><td style="float:right"> '+logoUrl+'</td></tr>';
+	html = html + '<tr><td><p style="float:right">' + smallerB + biggerB + '</p>';
+	html = html + '<br /><h3 class="titletext">'+args2js.title+'</h3>';
+	html = html + '</td></tr><tr><td class="svgchart">';
 	html = html + svg+'<br /><br />'+printB+' </body></html> ';
 	html = html + '</td></tr></table>';
 
-	var cwidth = 150 + parseInt(args2js.width);
-	var cheight = 250 + parseInt(args2js.height);
+	var cwidth = 250 + parseInt(args2js.width);
+	var cheight = 350 + parseInt(args2js.height);
 	myWindow=window.open('','','location=0,status=0,menubar=0,width='+cwidth+',height='+cheight);
 	myWindow.document.writeln(html);
    }

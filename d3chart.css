@@ -1,5 +1,5 @@
 
-/* Whole S3 simplechart instance of 1 call of shortcode */
+/* Whole S3 simplechart instance (eq 1 call of shortcode) */
 .svgtable
 {
 	background-color:#E6E6FA; 
@@ -14,7 +14,7 @@
 }
 
 /* Main title of chart */
-.titletext h3
+.titletext
 {
 	font-family: Arial, Helvetica, sans-serif;
 	text-align:center;
@@ -33,7 +33,7 @@
 /* One graphical segment of each data point on charts */
 .bar
 {
-	fill:black;
+	fill:navy;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	stroke-width: 0.4;
@@ -44,7 +44,7 @@
 .areabar
 {
 	stroke-width: 0.2;
-	stroke: black;
+	stroke: navy;
 }
 
 /* Chart area */
@@ -74,11 +74,15 @@
 /* X-axis title */
 .xtitle
 {
+	font-size: 12px;
+	color: navy;
 	font-weight:bold;
 }
 /* Y-axis title */
 .ytitle
 {
+	font-size: 12px;
+	color: navy;
 	font-weight:bold;
 }
 
@@ -87,13 +91,13 @@
 {
 }
 
-/* Axis labels: majors */
+/* Both axis labels: texts */
 .major
 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: black;
-	fill: black;
+	fill: navy;
 	margin: 2px;
 }
 
@@ -101,6 +105,58 @@
 .domain
 {
 }
+
+/* Data export table, Excel */
+.exportexcel 
+{
+	width:90%; 
+	color:navy; 
+	border:1px;
+	font-size: 10px;
+}
+
+/* Heading text of table */
+.exporttitle
+{
+	color:darkgray;
+	font-size: 14px;
+	font-weight:bold;
+}
+
+/* Labels of export table */
+.exportheading 
+{
+	background-color:darkgray;
+}
+
+/* Export of JSON data */
+.exportjson
+{
+	color:navy;
+	font-size: 10px;
+	font-weight:bold;
+}
+
+/* Export info message for all data types */
+.exportsave
+{
+	color:blue;
+	font-size: 10px;
+}
+
+/* General styles of data export boxes & buttons */
+.actbox {
+	background-color: #777777;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #666666;
+	padding: 2px 4px 2px 4px;
+	margin: 2px 2px;
+}
+.actbox:hover {
+	background-color: darkgray; /* #DDDDDD; */
+}
+
 /* All buttons outlook */
 .buttons 
 {
@@ -110,7 +166,7 @@
 
 /* Tooltip definitions */
 .ISO-3166-1 {
-	//color: transparent;
+	/* color: transparent; */
 	font-size: 1.0em;
 }
 
@@ -121,7 +177,7 @@ div.iputooltip {
 	color: Black;
     position: absolute;
     padding: 5px 10px 5px 10px;
-    background: #ffffcc; // #faf8ba;
+    background: #ffffcc; /* #faf8ba; */
     border-radius: 8px;
 	box-shadow: 4px 4px 2px gray;
 }

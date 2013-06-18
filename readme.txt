@@ -4,11 +4,11 @@ Donate link: http://www.tere-tech.eu/
 Tags: d3, visualization, chart, graph, CSS, CSS3, SVG, vector graphics, DOM, HTML5, shortcode
 Requires at least: 3.3.2
 Tested up to: 3.5.1
-Stable tag: 1.3.3
+Stable tag: 1.3.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-d3-simpleCharts offers you direct access to a few d3 basic charts and let you add them into your WordPress posts fast.
+d3-simpleCharts offers you direct access to a few d3 basic charts and let you add them into your WordPress posts fast and easy.
 
 == Description ==
 
@@ -20,27 +20,27 @@ This WP plug-in contains just 4 simple example graph types that you can call and
 
 The available chart types now are here: 'Columns', 'Bars', 'Line', 'Pie', 'Area'
 
-Pretty *simple* and obvious there, yes!!?
+Pretty *simple* and obvious there, yes?
 
 You can define *data input values* on the standard and uniform way from *wordpress shortcode's arguments* directly or from *external input data files*. 
 
-Shortcode's input is preferred way always as the primary source of data values & their labels (if both are given).
+Shortcode's input option (eq values='1,2,3') is the preferred way always as the primary source of data values & their labels.
 
-Three external file type formats are currently supported for input:
+Three external file type formats are currently supported for data input (eq datafile='mydata.csv'):
 
 1. CSV
 1. JSON
-1. TSV (eq tab separated data values)
+1. TSV (eq tab separated values)
 
-Note: XML should be easy to add soon, a bare skeleton JS code is there existing already but parsing of document is missing at this very 1st version of plugin package.
+Note: XML should be easy to add: a bare skeleton JS code is there existing already but parsing of document is missing at this very 1st version of plugin package.
 
-simpleCharts lets you start with very simple basic calls when you start to use it as a novice and then let you progress gradually to the quite advanced levels of SVG's *real professional properties* when you need them and are willing to budget enough time for deeper learning curve. 
+simpleCharts lets you start with very simple basic calls when you start to use it as a novice and then let you progress gradually to the quite advanced levels of SVG's *real professional properties* when you need them and are willing to budget enough time for deeper learning curve.
 
-Software is also automatically choosing default settings for more complex features that you vote not to use them yet.
+Software is also automatically choosing default settings for more complex features that you vote not to setup them yet.
 
 Here is the most *simple example of shortcode's call* that works very well:
 
-[simpleChart mtitle='Pets', labels='(Cats, Dogs, Birds)', values='(2,1,5)']
+[simpleChart maintitle='My Pets' labels='(Cats, Dogs, Birds)' values='(2,1,5)']
 
 Pretty *simple* & obvious (to create default 'Columns' chart) is it, huh?
 
@@ -48,14 +48,12 @@ Pretty *simple* & obvious (to create default 'Columns' chart) is it, huh?
 
 Now - to get a whole picture of all rich features available here - you can expand your knowledge and finally master something like this for each new post/page on WP:
 
-[simpleChart chart='Pie' mtitle='All Animals' values='(1,2,4,8,16)' labels='(Cats,Dogs,Birds,Frogs,Bears)' xtitle="Animal race" ytitle="Pcs on wild farm" datafile="animals.json" css='{ ".bar" : {"fill" : "navy", "stroke" : "blue"} , ".axis path, .axis line" : {"stroke" : "orange", "fill" : "gray"} , " " : { "font" : "12px sans-serif"}, ".chart":{"stroke":"gray"}, ".axis .xtpos":{"x":"200"} }'  width="800" height="600" format="+0.02%" title="These animals are living free around." minrange="1.0" url="http://en.wikipedia.org/wiki/Wild_animals"]
+[simpleChart chart='Pie' mtitle='All Animals' values='(1,2,4,8,16)' labels='(Cats,Dogs,Birds,Frogs,Bears)' xtitle="Animal race" ytitle="Pcs on wild farm" datafile="animals.json" width="800" height="600" format="+0.02%" title="These animals are living free around." minrange="1.0" url="http://en.wikipedia.org/wiki/Wild_animals" xrotate=-20]
 
 * Very advanced & powerfull shortcode's call* above to draw just the way you want your professional embedded super fast vector graphics.
 * [Advanced in detail on Wiki](https://github.com/mrBigJS/d3-simpleCharts/wiki/Advanced-examples)
 
-You can customize almost every main aspect of new created chart by feeding in legal CSS and SVG attributes to the graphs. These attributes are listed & documented openly on *W3C's* sites, like: 
-
-*www.w3schools.com*
+You can customize almost main aspects of new created chart easily by using CSS style file(s) and chart's generated CSS classes together. 
 .
 
 **Key Features**
@@ -63,14 +61,17 @@ You can customize almost every main aspect of new created chart by feeding in le
 1. Chart type switcher buttons to compare data different ways.
 1. New chart's vertical position control based on CSS.
 1. New chart's total look & feel control based on CSS.
-1. Smooth gradient coloring of each bar of chart available by request.
+1. Automatic smooth gradient coloring of each bar (or area) of chart.
 1. Many embedded charts on the same page, no problem.
-1. Supporting W3C's globally recognized web standards: DOM, SVG, and CSS.
+1. Supporting W3C's globally recognized open web standards: DOM, SVG, and CSS.
+1. Supports time series from data files.
+1. Open chart's data set export: Excel, SVG editor/viewer, and into big data (JSON) format.
+1. JavaScript API support for all shortcode's options with your apps.
 .
 
 **Data input and output**
 
-* Data importing from shortcode / external files (CSV/TSV/JSON) on server.
+* Data importing from external files (CSV/TSV/JSON) on server.
 * Exporting: Excel and JSON formats (eq big data).
 * Optional smart parsing of 2x2 matrix data points files row by row.
 .
@@ -82,7 +83,7 @@ You can customize almost every main aspect of new created chart by feeding in le
 
 All software is written also in a style that should be easy to expand & understand for any normal web developer of WordPress, DOM, JS & PHP languages. 
 
-Also, there is left on purpose a plenty of 'console.info(foo)' debugging calls for those essential variables of JS that you can activate in order to see what is really going on when SVG drawing takes its place (= consoles of FireBug & Chrome). 
+Also, there is left on purpose a plenty of 'console.info(foo)' debugging calls for those essential variables of JS that you can activate in order to see what is really going on when SVG drawing takes its place (= consoles of FireBug & Chrome).
 
 d3 lib is abit tricky to grasp at first - take your time & fill your coffee machine :-)
 
@@ -91,7 +92,7 @@ d3 lib is abit tricky to grasp at first - take your time & fill your coffee mach
 * [d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
 
 
-**HAPPY Charting on WordPress !**
+**HAPPY simpleCharting on WordPress !**
 
 
 == Installation ==
@@ -124,7 +125,7 @@ Let me know if you are producting suggested improvement and take this work to th
 
 = Is it possible to have multiple charts on the same WP post or page? =
 
-Good point!
+Good point & question !
 
 YES indeed, the software is written so that it hides all the (= ugly) complexity of accounting of many separate charts + styles on the same page of WP.
 
@@ -132,27 +133,24 @@ So, you may have many pretty charts on the same page with their own original CSS
 
 = Is it possible to embed a single chart to some exact position of post / page? =
 
-Not yet: generating the container for a graph dynamically is not so easy task for PHP & WordPress environment (without binding this to other external frameworks, like JQuery, etc).
+YES, you can now use 2 different methods to do this:
 
-Sorry - give us a good suggestion to solve it and we do this at the next version.
+* Before calling shortcode [simpleChart] manually write (in WP's HTML mode) chart's placeholder(s) (often, DIV or SPAN tags in HTML). Take a look 'chartid' option on manual.
+* Generating bare chart directly from JavaScript function simpleChart() and letting it create placeholder automatically.
 
-Now, since all shortcode processing happens at first of WP post (/page) the graphs are also printing out at the top of post, too.
-
-This could change in future's versions - stay tuned in !
-
-= How can I develope my fancy XYZ or ABC around this code and get it included inside this package, too? =
+= How can I develope my own fancy XYZ or ABC around this code and get it included, too? =
 
 We encourage open collaborative development for programmers (by GitHub) over here:
 
 [d3-simpleCharts on GitHub](https://github.com/mrBigJS/d3-simpleCharts "Join in and fork this code even better to anyone.")
 
-= So, there is no user manual at all for this WordPress plugin, huh? =
+= So, there is no user manual at all for this WordPress plugin inside download, huh? =
 
-User online manual & reference is building up gradually on GitHub's Wiki over here:
+Online manual & reference is building up gradually on GitHub's Wiki over here:
 
 [d3-simpleCharts - user's manual & reference of all functions](https://github.com/mrBigJS/d3-simpleCharts/wiki/Introduction)
 
-Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.org/) client together with GitHub. It really takes the pain away from learning Git. Here is [a nice tutorial](http://techlunatic.com/2011/09/how-to-submit-your-first-plugin-to-wordpress-ultimate-guide/) about its use.
+Also, we recommend (on Windows) to use [TortoisesSVN](http://tortoisesvn.tigris.org/) client together with GitHub. It really takes the pain away from learning Git. Here is [a nice tutorial](http://techlunatic.com/2011/09/how-to-submit-your-first-plugin-to-wordpress-ultimate-guide/) about its use.
 
 
 *Very Good Further Links*
@@ -176,13 +174,31 @@ Also, we recommend on windows to use [TortoisesSVN](http://tortoisesvn.tigris.or
 1. Cool tooltips visible here on 'Columns' charts.
 2. Area chart showing user defined smooth gradient colors (eq [... startbar="lime" & endbar="red"]).
 3. Button icons to call 5 different supported chart types on 'Columns' chart.
-4. A 'Pie' chart: its slices are colored smoothly from HTML 'navy' to 'gold' + more custom titles present in graph (old UI).
+4. A 'Pie' chart: its slices are colored smoothly from 'navy' to 'gold' + more custom titles present in graph.
 5. A supported 'Line' chart that is produced by Rickshaw's library.
 6. Resized SVG chart on its own popup window + ready to print on paper.
-8. Shows how basic 'Columns' looks out together with home's pets example (old UI).
-9. Shows how basic 'Area' looks out together with home's pets example (old UI).
+8. Shows how basic 'Columns' looks out (old UI).
+9. Shows how basic 'Area' looks out (with old UI buttons).
+10. Tiny bare chart only generated by JavaScript.
+11. One more car and we need to rotate data labels abit here.
 
 == Changelog ==
+
+= 1.3.7 =
+Version 1.3.7 -
+Fixing the bug of exporting correct SVG chart instance as a download. Clarifying overall design of all buttons.
+
+= 1.3.6 =
+Version 1.3.6 -
+Opening in apps + saving to a file export data now available. For example, direct opening into SVG editor possible for a chart (if you set exportsvg option active). Added classes to control the style of export data box from CSS.
+
+= 1.3.5 =
+Version 1.3.5 -
+All pop-up window charts follow the CSS style rules of its parent chart faithfully. Refining some axises default setup values. More fancy screenshots from real fast cars.
+
+= 1.3.4 =
+Version 1.3.4 -
+Adding new option 'xrotate' for rotating x axis labels with Columns chart as you wish. Some options becomes more tolerant for typos. Fixing bugs & warnings (BIG thanks for Cheche!).
 
 = 1.3.3 =
 Version 1.3.3 - 
