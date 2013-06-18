@@ -1,12 +1,11 @@
-
 == Description ==
 
-d3-simpleCharts is here: you can start to generate and show the new W3C's sharp and fast SVG charts 
-(eq SVG formats via d3.js data driven docs library) from your WordPress blog pages/posts easily.
+d3-simpleCharts is here: you can start to generate and show the new W3C's sharp and ultra fast SVG charts 
+from your own WordPress blog pages / posts easily.
 
-This package gives you 1 powerfull shortcode to startup using 4 different shapes of graphs.
+This package gives you 1 powerfull shortcode to startup using 5 different shapes & types of graphs.
 
-Please, talke a look at readme.txt or  Wiki for documentations.
+Please, take a look at Wiki for full documentation.
 
 Thank you !
 
